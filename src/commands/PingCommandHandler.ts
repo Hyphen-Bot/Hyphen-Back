@@ -20,7 +20,7 @@ import CommandHandler from './CommandHandler';
 
 class PingCommandHandler extends CommandHandler {
   handler = async () => {
-    await this.send(`Pong ! (${moment().milliseconds() - moment(this._message.createdAt).milliseconds()} ms)`);
+    await this.send(`Pong ! (${Math.abs(moment().milliseconds() - moment(this._message.createdAt).milliseconds())} ms)`);
   }
 }
 
