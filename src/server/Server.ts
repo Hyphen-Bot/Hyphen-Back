@@ -16,19 +16,24 @@
  */
 
 import { Client } from 'discord.js';
+import { EventEmitter } from 'events';
 import * as express from "express";
 import * as bearerToken from "express-bearer-token";
+import * as bodyParser from "body-parser";
 import * as cors from "cors";
-import { GuildsRoute, MembersRoute, CommandsRoute } from './routes';
+import { GuildsRoute, CommandsRoute } from './routes';
 
 class Server {
 
   _client: Client;
+  _apiEventEmitter: EventEmitter;
+
   _app: any;
   _http: any;
 
-  constructor(client: Client) {
+  constructor(client: Client, apiEventEmitter: EventEmitter) {
     this._client = client;
+    this._apiEventEmitter = apiEventEmitter;
     this._app = express();
     this._http = require("http").createServer(this._app);
   }
@@ -47,12 +52,13 @@ class Server {
   registerMiddleware() {
       this._app.use(bearerToken());
       this._app.use(cors());
+      this._app.use(bodyParser.json());
       // this._app.use(express.static(path.join(__dirname, '/../../../build')));
   }
 
   registerRoutes() {
-      this._app.use('/guilds', new GuildsRoute(this._client).setup());
-      this._app.use('/commands', new CommandsRoute(this._client).setup());
+      this._app.use('/guilds', new GuildsRoute(this._client, this._apiEventEmitter).setup());
+      this._app.use('/commands', new CommandsRoute(this._client, this._apiEventEmitter).setup());
 
       // this._app.get('*', (req, res) => res.sendFile(path.join(`${__dirname}/../../../build/index.html`)));
   }

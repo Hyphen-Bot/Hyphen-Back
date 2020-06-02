@@ -16,6 +16,7 @@
  */
 
 import { Client, Guild, GuildChannel } from 'discord.js';
+import { EventEmitter } from 'events';
 import { container } from 'tsyringe';
 import EventHandler from './EventHandler';
 import { Logger } from '../utils';
@@ -23,23 +24,26 @@ import MessageEventHandler from './MessageEventHandler';
 import { GuildService } from '../db';
 import { GuildEntity } from '../db/entity';
 import ChannelCreateEventHandler from './ChannelCreateEventHandler';
+import ApiEventHandler from './ApiEventHandler';
 
 class GuildDispatcher {
 
-  static connectGuild(client: Client, guild: Guild) {
-    new GuildDispatcher(client, guild).setupClientStack();
+  static connectGuild(client: Client, guild: Guild, apiEventEmitter: EventEmitter) {
+    new GuildDispatcher(client, guild, apiEventEmitter).setupClientStack();
   }
 
   _client: Client;
   _guild: Guild;
+  _apiEventEmitter: EventEmitter;
 
   _guildService: GuildService;
 
   _eventHandlers: Array<EventHandler>;
 
-  constructor(client: Client, guild: Guild) {
+  constructor(client: Client, guild: Guild, apiEventEmitter: EventEmitter) {
     this._client = client;
     this._guild = guild;
+    this._apiEventEmitter = apiEventEmitter;
     this._eventHandlers = [];
     this._guildService = container.resolve(GuildService);
   }
@@ -51,8 +55,9 @@ class GuildDispatcher {
     await this._initializeGuild(await this._guildService.getGuild(this._guild.id));
 
     // create child handlers
-    this._eventHandlers.push(new MessageEventHandler(this._client, this._guild));
-    this._eventHandlers.push(new ChannelCreateEventHandler(this._client, this._guild));
+    this._eventHandlers.push(new MessageEventHandler(this._client, this._guild, this._apiEventEmitter));
+    this._eventHandlers.push(new ChannelCreateEventHandler(this._client, this._guild, this._apiEventEmitter));
+    this._eventHandlers.push(new ApiEventHandler(this._client, this._guild, this._apiEventEmitter));
   }
 
   _initializeGuild = async (guild: GuildEntity) => {

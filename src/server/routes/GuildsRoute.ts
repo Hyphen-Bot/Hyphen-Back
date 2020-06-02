@@ -16,22 +16,28 @@
  */
 
 import { Guild, Permissions, Client } from 'discord.js';
+import { EventEmitter } from 'events';
 import { container } from 'tsyringe';
 import Route from "./Route";
 import DiscordApiClient from '../DiscordApiClient';
-import { MemberService } from '../../db';
+import { MemberService, GuildService } from '../../db';
 
 class GuildsRoute extends Route {
 
   _memberService: MemberService;
+  _guildService: GuildService;
 
-  constructor(client: Client) {
-    super(client);
+  constructor(client: Client, apiEventEmitter: EventEmitter) {
+    super(client, apiEventEmitter);
 
     this._memberService = container.resolve(MemberService);
+    this._guildService = container.resolve(GuildService);
   }
 
   setup() {
+      /**
+       * GET /
+       */
       this._router.get('/', async (req, res) => {
           try {
               const guilds = await DiscordApiClient.getGuilds(req.token);
@@ -54,10 +60,11 @@ class GuildsRoute extends Route {
           }
       });
 
+      /**
+       * GET /{guild.id}/members
+       */
       this._router.get('/:guildId/members', async (req, res) => {
-        try {
-          if (!req.params.guildId) throw new Error(JSON.stringify({ error: true, message: "Please provide a guildId querystring !" }));
-          
+        try {          
           let members: Array<any> = (await this._memberService.getAllGuildMembers(req.params.guildId.toString())).map(member => ({
             username: this._client.users.find(user => user.id === member.discordUserId).tag,
             xpAmount: member.xpAmount,
@@ -69,7 +76,46 @@ class GuildsRoute extends Route {
         } catch (e) {
           return res.send(e.message);
         }
-    });
+      });
+
+      /**
+       * /{guild.id}/{command}/{action}
+       */
+      this._router.put('/:guildId/:command/:action', async (req, res) => {
+        try {          
+          const { guildId, command, action }: any = req.params;
+
+          if (action !== "enable" && action !== "disable") throw new Error(JSON.stringify({ error: true, message: "Action can only be enable or disable !" }));
+
+          if (action === "enable") {
+            await this._guildService.enableCommand(guildId, command);
+          } else if (action === "disable") {
+            await this._guildService.disableCommand(guildId, command);
+          }
+
+          this._apiEventEmitter.emit("reloadCommands", { guildId });
+          
+          return res.json({ success: true });
+        } catch (e) {
+          return res.send(e.message);
+        }
+      });
+
+      /**
+       * /{guild.id}/{channel.id}/send
+       */
+      this._router.post('/:guildId/:channelId/send', async (req, res) => {
+        try {          
+          const { guildId, channelId }: any = req.params;
+          const { message }: any = req.body;
+
+          this._apiEventEmitter.emit("sendMessage", { guildId, channelId, message });
+          
+          return res.json({ success: true });
+        } catch (e) {
+          return res.send(e.message);
+        }
+      });
 
       return this._router;
   }

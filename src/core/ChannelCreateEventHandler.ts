@@ -17,6 +17,7 @@
 
 import { Guild, Client, GuildChannel } from 'discord.js';
 import { container } from 'tsyringe';
+import { EventEmitter } from 'events';
 import EventHandler from "./EventHandler";
 import { GuildService } from '../db';
 
@@ -24,19 +25,22 @@ class ChannelCreateEventHandler extends EventHandler {
 
   _guildService: GuildService;
 
-  constructor(client: Client, guild: Guild) {
-    super(client, guild);
+  constructor(client: Client, guild: Guild, apiEventEmitter: EventEmitter) {
+    super(client, guild, apiEventEmitter);
 
     this._guildService = container.resolve(GuildService);
 
-    this.onChannelCreate(this._handleChannelCreated);
+    // listeners
+    this._client.on("channelCreate", this._handleChannelCreated);
   }
 
   _handleChannelCreated = async (channel: GuildChannel) => {
-    const guild = await this._guildService.getGuild(this._guild.id);
+    if (channel.guild.id === this._guild.id) {
+      const guild = await this._guildService.getGuild(this._guild.id);
 
-    // add muted overwrite
-    await channel.overwritePermissions(guild.mutedRoleId, { SEND_MESSAGES: false, SPEAK: false });
+      // add muted overwrite
+      await channel.overwritePermissions(guild.mutedRoleId, { SEND_MESSAGES: false, SPEAK: false });
+    }
   }
 }
 

@@ -15,21 +15,24 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Client, Guild, Message, GuildChannel } from 'discord.js';
+import { Client, Guild, Message } from 'discord.js';
+import { EventEmitter } from 'events';
 import Command from '../commands/Command';
 
 class EventHandler {
   
   _client: Client;
   _guild: Guild;
+  _apiEventEmitter: EventEmitter;
 
   _commands: Array<Command>;
 
   _messageListeners: any;
 
-  constructor(client: Client, guild: Guild) {
+  constructor(client: Client, guild: Guild, apiEventEmitter: EventEmitter) {
     this._client = client;
     this._guild = guild;
+    this._apiEventEmitter = apiEventEmitter;
     this._commands = [];
     this._messageListeners = {};
   }
@@ -49,14 +52,6 @@ class EventHandler {
   destroyMessageListener = (name: string) => {    
     this._client.removeListener("message", this._messageListeners[name]);
     delete this._messageListeners[name];
-  }
-
-  onChannelCreate = (listener: (channel: GuildChannel) => void) => {
-    this._client.on("channelCreate", (channel: GuildChannel) => {
-      if (channel.guild.id === this._guild.id) {
-        listener(channel);
-      }
-    });
   }
 }
 

@@ -15,31 +15,25 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Client } from 'discord.js';
-import { Router } from "express";
+import { Guild, Client, TextChannel } from 'discord.js';
 import { EventEmitter } from 'events';
+import EventHandler from "./EventHandler";
 
-class Route {
+class ApiEventHandler extends EventHandler {
 
-  _client: Client;
-  _apiEventEmitter: EventEmitter;
+  constructor(client: Client, guild: Guild, apiEventEmitter: EventEmitter) {
+    super(client, guild, apiEventEmitter);
 
-  _router: Router;
-
-  constructor(client: Client, apiEventEmitter: EventEmitter) {
-      this._client = client;
-      this._apiEventEmitter = apiEventEmitter;
-      this._router = Router();
+    // listeners
+    this._apiEventEmitter.on("sendMessage", this._handleSendMessage);
   }
 
-  setup() {
-      this._router.get('/', function(req, res) {
-          res.send("Hello world !");
-      });
-
-      return this._router;
+  _handleSendMessage = async ({ guildId, channelId, message }: any) => {
+    if (this._guild.id === guildId) {
+      const channel = <TextChannel>this._guild.channels.find(channel => channel.id === channelId);
+      await channel.send(message);
+    }
   }
-
 }
 
-export default Route;
+export default ApiEventHandler;

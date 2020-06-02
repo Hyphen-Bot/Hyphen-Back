@@ -18,6 +18,7 @@
 import { Client, Guild } from 'discord.js';
 import "reflect-metadata";
 import { createConnection, Connection } from "typeorm";
+import { EventEmitter } from "events";
 import { GuildEntity, MemberEntity, WarnEntity } from './db/entity';
 import { Logger } from "./utils";
 import { GuildDispatcher } from './core';
@@ -53,18 +54,21 @@ createConnection({
   // setup client
   const client = new Client();
 
+  // setup api / bot eventemitter
+  const apiEventEmitter = new EventEmitter();
+
   // start rest server
-  new Server(client).start();
+  new Server(client, apiEventEmitter).start();
 
   // setup listeners
   client.on("ready", () => {
     Logger.info("Setting up guilds...");
-    client.guilds.forEach((guild: Guild) => GuildDispatcher.connectGuild(client, guild));
+    client.guilds.forEach((guild: Guild) => GuildDispatcher.connectGuild(client, guild, apiEventEmitter));
   });
 
   client.on("guildCreate", (guild: Guild) => {
     Logger.info(`Client joined guild ${guild.id}. Setting up...`);
-    GuildDispatcher.connectGuild(client, guild);
+    GuildDispatcher.connectGuild(client, guild, apiEventEmitter);
   });
 
   // login client

@@ -17,6 +17,7 @@
 
 import { Guild, Client, Message, Permissions, RichEmbed } from 'discord.js';
 import { container } from 'tsyringe';
+import { EventEmitter } from 'events';
 import EventHandler from "./EventHandler";
 import { 
   Command, 
@@ -38,14 +39,17 @@ class MessageEventHandler extends EventHandler {
   _memberService: MemberService;
   _guildService: GuildService;
 
-  constructor(client: Client, guild: Guild) {
-    super(client, guild);
+  constructor(client: Client, guild: Guild, apiEventEmitter: EventEmitter) {
+    super(client, guild, apiEventEmitter);
 
     this._memberService = container.resolve(MemberService);
     this._guildService = container.resolve(GuildService);
 
     this._loadCommands();
+
+    // listeners
     this.onMessage("main", this._handleNewMessage);
+    this._apiEventEmitter.on("reloadCommands", this._handleReloadCommands);
   }
 
   _loadCommands = async () => {
@@ -65,6 +69,12 @@ class MessageEventHandler extends EventHandler {
     if (commands.includes(Commands.UNMUTE)) this._enableCommand(Commands.UNMUTE, ["member"], [Permissions.FLAGS.ADMINISTRATOR], CommandType.MODERATION, UnmuteCommandHandler);
     if (commands.includes(Commands.CLEAR)) this._enableCommand(Commands.CLEAR, ["amount"], [Permissions.FLAGS.ADMINISTRATOR],CommandType.MODERATION, ClearCommandHandler);
     if (commands.includes(Commands.PUNCH)) this._enableCommand(Commands.PUNCH, ["member"], [], CommandType.FUN, PunchCommandHandler);
+  }
+
+  _handleReloadCommands = ({ guildId }: any) => {
+    if (guildId === this._guild.id) {
+      this._loadCommands();
+    }
   }
 
   _handleNewMessage = async (message: Message) => {
