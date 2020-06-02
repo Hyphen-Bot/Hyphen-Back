@@ -19,7 +19,6 @@ import { Client } from 'discord.js';
 import { container } from 'tsyringe';
 import Route from "./Route";
 import { MemberService } from '../../db';
-import { MemberEntity } from '../../db/entity';
 
 class MembersRoute extends Route {
 
@@ -45,7 +44,7 @@ class MembersRoute extends Route {
             
             return res.json(members);
           } catch (e) {
-            return res.json(JSON.parse(e.message));
+            return res.send(e.message);
           }
       });
 
