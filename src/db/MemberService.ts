@@ -32,6 +32,10 @@ class MemberService {
     return this._memberRepository.findOne({ where: { discordUserId, guild: { id: guildId } }, relations: ["guild"] });
   }
 
+  async getAllGuildMembers(guildId: string): Promise<Array<MemberEntity>> {
+    return this._memberRepository.find({ where: { guild: { id: guildId } }, relations: ["guild"] });
+  }
+
   async addMember(discordUserId: string, guildId: string, language: string): Promise<MemberEntity> {
     if (await this._memberRepository.count({ where: { discordUserId, guild: { id: guildId } } }) <= 0) {
       const guild = await this._guildRepository.findOne(guildId);

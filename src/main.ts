@@ -23,6 +23,7 @@ import { Logger } from "./utils";
 import { GuildDispatcher } from './core';
 import { container } from 'tsyringe';
 import { MemberService, GuildService, WarnService } from './db';
+import { Server } from './server';
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
@@ -51,6 +52,9 @@ createConnection({
 
   // setup client
   const client = new Client();
+
+  // start rest server
+  new Server(client).start();
 
   // setup listeners
   client.on("ready", () => {
