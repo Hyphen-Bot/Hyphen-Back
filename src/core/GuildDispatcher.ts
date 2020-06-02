@@ -15,12 +15,14 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Client, Guild } from 'discord.js';
+import { Client, Guild, GuildChannel } from 'discord.js';
 import { container } from 'tsyringe';
 import EventHandler from './EventHandler';
 import { Logger } from '../utils';
 import MessageEventHandler from './MessageEventHandler';
 import { GuildService } from '../db';
+import { GuildEntity } from '../db/entity';
+import ChannelCreateEventHandler from './ChannelCreateEventHandler';
 
 class GuildDispatcher {
 
@@ -42,14 +44,38 @@ class GuildDispatcher {
     this._guildService = container.resolve(GuildService);
   }
 
-  setupClientStack() {
+  setupClientStack = async () => {
     Logger.info(`Setting up guild ${this._guild.id}...`);
 
-    // initialize db table
-    this._guildService.addGuild(this._guild.id, "en");
+    // initialize guild
+    await this._initializeGuild(await this._guildService.getGuild(this._guild.id));
 
     // create child handlers
     this._eventHandlers.push(new MessageEventHandler(this._client, this._guild));
+    this._eventHandlers.push(new ChannelCreateEventHandler(this._client, this._guild));
+  }
+
+  _initializeGuild = async (guild: GuildEntity) => {
+    try {
+      // initialize db table
+      if (!guild) {
+        Logger.info(`Creating guild ${this._guild.id}...`);
+        guild = await this._guildService.addGuild(this._guild.id, "en");
+      }
+
+      // initialize roles
+      if (!guild.mutedRoleId) {
+        Logger.info(`Adding Muted role to guild ${this._guild.id}...`);
+        const position = this._guild.member(this._client.user).highestRole.position - 1;
+        const { id } = await this._guild.createRole({ name: "Muted", permissions: 0, position });
+        await this._guildService.setGuildMutedRoleId(this._guild.id, id);
+        this._guild.channels.forEach(async (channel: GuildChannel) => {
+          await channel.overwritePermissions(id, { SEND_MESSAGES: false, SPEAK: false });
+        });
+      }
+    } catch (e) {
+      Logger.error(e.message);
+    }
   }
 }
 

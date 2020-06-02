@@ -15,7 +15,8 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Message, User, Attachment, MessageOptions, RichEmbed } from 'discord.js';
+import { Message, User, Attachment, MessageOptions, RichEmbed, Guild } from 'discord.js';
+import { Logger } from '../utils';
 
 class CommandHandler {
 
@@ -39,6 +40,7 @@ class CommandHandler {
         .setTitle('An error occurred !')
         .setDescription(e.message)
       this.sendData(embed);
+      Logger.error(e);
     }
   }
 
@@ -68,6 +70,13 @@ class CommandHandler {
    */
   get user(): User {
     return this._message.author;
+  }
+
+  /**
+   * Get the current guild
+   */
+  get guild(): Guild {
+    return this._message.guild;
   }
 }
 

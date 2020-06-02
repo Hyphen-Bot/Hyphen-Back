@@ -15,28 +15,15 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Entity, CreateDateColumn, PrimaryColumn, OneToMany, Column } from "typeorm";
-import Member from './Member';
-import Warn from './Warn';
-
-@Entity()
-export default class Guild {
-
-    @PrimaryColumn()
-    id: string;
-
-    @Column()
-    language: string;
-
-    @OneToMany(type => Member, member => member.guild)
-    members: Member[];
-
-    @OneToMany(type => Warn, warn => warn.guild)
-    warns: Warn[];
-
-    @Column({ nullable: true })
-    mutedRoleId: string;
-
-    @CreateDateColumn()
-    createdAt: Date;
+class Color {
+  static random() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
 }
+
+export default Color;

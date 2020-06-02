@@ -18,18 +18,16 @@
 import { RichEmbed, Message } from 'discord.js';
 import { container } from 'tsyringe';
 import CommandHandler from './CommandHandler';
-import { WarnService, MemberService } from '../db';
+import { GuildService } from '../db';
 
-class WarnCommandHandler extends CommandHandler {
+class MuteCommandHandler extends CommandHandler {
 
-  _warnService: WarnService;
-  _memberService: MemberService;
+  _guildService: GuildService;
 
   constructor(message: Message, payload: any) {
     super(message, payload);
 
-    this._warnService = container.resolve(WarnService);
-    this._memberService = container.resolve(MemberService);
+    this._guildService = container.resolve(GuildService);
   }
 
   handler = async () => {
@@ -37,22 +35,16 @@ class WarnCommandHandler extends CommandHandler {
 
     const reason = this._payload.args.reason ? this._payload.args.reason : "No reason provided!";
 
-    const member = await this._memberService.getGuildMemberByDiscordId(this._payload.mentions[0].user.id, this.guild.id);
-    if (!member) {
-      await this._memberService.addMember(this._payload.mentions[0].user.id, this._message.guild.id, "en");
-    }
-
-    await this._warnService.warnMember(this._payload.mentions[0].user.id, this.user.id, this._message.guild.id, reason);
+    const mutedRoleId = (await this._guildService.getGuild(this.guild.id)).mutedRoleId;
+    await this.guild.member(this._payload.mentions[0].user.id).addRole(mutedRoleId);
 
     const embed = new RichEmbed()
-      .setAuthor(`Successfully warned ${this._payload.mentions[0].user.tag}`, this._payload.mentions[0].user.avatarURL)
-      .setColor("#f8cd65")
-      .setThumbnail("https://cdn.discordapp.com/attachments/717011525105090661/717082034169970688/289673858e06dfa2e0e3a7ee610c3a30.png")
-      .setFooter(`Warned by ${this.user.tag}`)
+      .setAuthor(`Successfully muted ${this._payload.mentions[0].user.tag}`, this._payload.mentions[0].user.avatarURL)
+      .setFooter(`Muted by ${this.user.tag}`)
       .addField("Reason", reason);
     
     await this.sendData(embed);
   }
 }
 
-export default WarnCommandHandler;
+export default MuteCommandHandler;

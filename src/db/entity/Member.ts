@@ -15,15 +15,18 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Entity, Column, OneToMany, CreateDateColumn, PrimaryColumn, ManyToOne } from "typeorm";
+import { Entity, Column, OneToMany, CreateDateColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import Warn from './Warn';
 import Guild from './Guild';
 
 @Entity()
 export default class Member {
 
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn("uuid")
     id: string;
+
+    @Column()
+    discordUserId: string;
 
     @ManyToOne(type => Guild, guild => guild.members)
     guild: Guild;

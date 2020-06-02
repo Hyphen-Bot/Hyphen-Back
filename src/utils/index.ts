@@ -16,7 +16,9 @@
  */
 
 import Logger from "./Logger";
+import Color from "./Color";
 
 export {
-    Logger
+    Logger,
+    Color
 }

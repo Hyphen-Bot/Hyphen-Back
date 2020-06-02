@@ -15,37 +15,29 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Client, Guild, Message, GuildChannel } from 'discord.js';
-import Command from '../commands/Command';
+import { Guild, Client, GuildChannel } from 'discord.js';
+import { container } from 'tsyringe';
+import EventHandler from "./EventHandler";
+import { GuildService } from '../db';
 
-class EventHandler {
-  
-  _client: Client;
-  _guild: Guild;
+class ChannelCreateEventHandler extends EventHandler {
 
-  _commands: Array<Command>;
+  _guildService: GuildService;
 
   constructor(client: Client, guild: Guild) {
-    this._client = client;
-    this._guild = guild;
-    this._commands = [];
+    super(client, guild);
+
+    this._guildService = container.resolve(GuildService);
+
+    this.onChannelCreate(this._handleChannelCreated);
   }
 
-  onMessage = (listener: (message: Message) => void) => {
-    this._client.on("message", (msg: Message) => {
-      if (msg.guild.id === this._guild.id) {
-        listener(msg);
-      }
-    });
-  }
+  _handleChannelCreated = async (channel: GuildChannel) => {
+    const guild = await this._guildService.getGuild(this._guild.id);
 
-  onChannelCreate = (listener: (channel: GuildChannel) => void) => {
-    this._client.on("channelCreate", (channel: GuildChannel) => {
-      if (channel.guild.id === this._guild.id) {
-        listener(channel);
-      }
-    });
+    // add muted overwrite
+    await channel.overwritePermissions(guild.mutedRoleId, { SEND_MESSAGES: false, SPEAK: false });
   }
 }
 
-export default EventHandler;
+export default ChannelCreateEventHandler;

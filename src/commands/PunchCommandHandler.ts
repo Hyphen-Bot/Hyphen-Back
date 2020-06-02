@@ -15,28 +15,23 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Entity, CreateDateColumn, PrimaryColumn, OneToMany, Column } from "typeorm";
-import Member from './Member';
-import Warn from './Warn';
+import { RichEmbed } from 'discord.js';
+import fetch from "node-fetch";
+import CommandHandler from './CommandHandler';
+import { Color } from '../utils';
 
-@Entity()
-export default class Guild {
+class PunchCommandHandler extends CommandHandler {
+  handler = async () => {
+    const response = await fetch('https://neko-love.xyz/api/v1/punch');
+    const json = await response.json();
+    
+    const embed = new RichEmbed()
+      .setAuthor(`${this.user.username} punched ${this._payload.mentions[0].user.username} 🤜`, this.user.avatarURL)
+      .setColor(Color.random())
+      .setImage(json.url);
 
-    @PrimaryColumn()
-    id: string;
-
-    @Column()
-    language: string;
-
-    @OneToMany(type => Member, member => member.guild)
-    members: Member[];
-
-    @OneToMany(type => Warn, warn => warn.guild)
-    warns: Warn[];
-
-    @Column({ nullable: true })
-    mutedRoleId: string;
-
-    @CreateDateColumn()
-    createdAt: Date;
+    await this.sendData(embed);
+  }
 }
+
+export default PunchCommandHandler;

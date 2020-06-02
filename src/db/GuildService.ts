@@ -26,6 +26,10 @@ class GuildService {
     this._guildRepository = connection.getRepository(GuildEntity);
   }
 
+  async getGuild(id: string): Promise<GuildEntity> {
+    return this._guildRepository.findOne(id);
+  }
+
   async getAllGuilds(): Promise<Array<GuildEntity>> {
     return this._guildRepository.find();
   }
@@ -39,6 +43,12 @@ class GuildService {
     }
 
     return this._guildRepository.findOne({ where: { id } });
+  }
+
+  async setGuildMutedRoleId(id: string, roleId: string) {
+    const guild = await this.getGuild(id);
+    guild.mutedRoleId = roleId;
+    return this._guildRepository.save(guild);
   }
 
 }

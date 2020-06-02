@@ -28,32 +28,32 @@ class MemberService {
     this._guildRepository = connection.getRepository(GuildEntity);
   }
 
-  async getMember(id: string) {
-    return this._memberRepository.findOne(id);
+  async getGuildMemberByDiscordId(discordUserId: string, guildId: string) {
+    return this._memberRepository.findOne({ where: { discordUserId, guild: { id: guildId } }, relations: ["guild"] });
   }
 
-  async addMember(id: string, guildId: string, language: string): Promise<MemberEntity> {
-    if (await this._memberRepository.count({ where: { id, guild: { id: guildId } } }) <= 0) {
+  async addMember(discordUserId: string, guildId: string, language: string): Promise<MemberEntity> {
+    if (await this._memberRepository.count({ where: { discordUserId, guild: { id: guildId } } }) <= 0) {
       const guild = await this._guildRepository.findOne(guildId);
 
       const member = new MemberEntity();
-      member.id = id;
+      member.discordUserId = discordUserId;
       member.guild = guild;
       member.language = language;
       return this._memberRepository.save(member);
     }
 
-    return this._memberRepository.findOne({ where: { id, guild: { id: guildId } } });
+    return this._memberRepository.findOne({ where: { discordUserId, guild: { id: guildId } } });
   }
 
-  async increaseXpAmount(id: string) {
-    const member = await this._memberRepository.findOne({ id });
+  async increaseXpAmount(discordUserId: string, guildId: string) {
+    const member = await this.getGuildMemberByDiscordId(discordUserId, guildId);
     member.xpAmount++;
     return this._memberRepository.save(member);
   }
 
-  async getXpAmount(id: string) {
-    return (await this._memberRepository.findOne({ id })).xpAmount;
+  async getXpAmount(discordUserId: string, guildId: string) {
+    return (await this.getGuildMemberByDiscordId(discordUserId, guildId)).xpAmount;
   }
 
 }

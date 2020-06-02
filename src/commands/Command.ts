@@ -49,7 +49,7 @@ class Command {
       // is user allowed?
       if (this._allowedPermissionFlags.length > 0) {
         this._allowedPermissionFlags.forEach(allowedPermissionFlag => {
-          if (message.member.permissions.hasPermission(allowedPermissionFlag)) isUserAllowed = true;
+          if (message.member.permissions.has(allowedPermissionFlag)) isUserAllowed = true;
         });
       } else {
         isUserAllowed = true;
@@ -80,6 +80,18 @@ class Command {
         }
       }
     });
+  }
+
+  get command(): string {
+    return this._command;
+  }
+
+  get args(): Array<string> {
+    return this._args;
+  }
+
+  get allowedPermissionFlags(): Array<number> {
+    return this._allowedPermissionFlags;
   }
 }
 

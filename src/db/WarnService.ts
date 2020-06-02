@@ -15,7 +15,7 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Connection, Repository } from 'typeorm';
+import { Connection, Repository, createQueryBuilder } from 'typeorm';
 import { WarnEntity, GuildEntity, MemberEntity } from './entity';
 import Warn from './entity/Warn';
 
@@ -31,9 +31,9 @@ class WarnRepository {
     this._memberRepository = connection.getRepository(MemberEntity);
   }
 
-  async warnMember(id: string, byUserId: string, guildId: string, reason: string) {
-    const member = await this._memberRepository.findOne(id);
-    const byMember = await this._memberRepository.findOne(byUserId);
+  async warnMember(discordUserId: string, byDiscordUserId: string, guildId: string, reason: string) {
+    const member = await this._memberRepository.findOne({ discordUserId });
+    const byMember = await this._memberRepository.findOne({ discordUserId: byDiscordUserId });
     const guild = await this._guildRepository.findOne(guildId);
 
     if (!member) {
@@ -49,8 +49,9 @@ class WarnRepository {
     return this._warnRepository.save(warn);
   }
 
-  async getUserWarns(userId: string) {
-    return this._warnRepository.find({ where: { member: { id: userId } }, relations: ["member", "byMember"] });
+  async getUserWarnsByGuild(discordUserId: string, guildId: string) {
+    const { id } = await this._memberRepository.findOne({ where: { discordUserId } });
+    return this._warnRepository.find({ where: { member: { id }, guild: { id: guildId } }, relations: ["member", "byMember"] });
   }
 }
 

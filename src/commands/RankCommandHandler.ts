@@ -32,7 +32,7 @@ class RankCommandHandler extends CommandHandler {
   }
 
   handler = async () => {
-    const xpAmount = await this._memberService.getXpAmount(this.user.id);
+    const xpAmount = await this._memberService.getXpAmount(this.user.id, this.guild.id);
     const image = await this._generateImage(xpAmount);
     await this.sendData(new Attachment(image));
   }
