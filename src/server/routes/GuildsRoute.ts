@@ -15,11 +15,21 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Guild, Permissions } from 'discord.js';
+import { Guild, Permissions, Client } from 'discord.js';
+import { container } from 'tsyringe';
 import Route from "./Route";
 import DiscordApiClient from '../DiscordApiClient';
+import { MemberService } from '../../db';
 
 class GuildsRoute extends Route {
+
+  _memberService: MemberService;
+
+  constructor(client: Client) {
+    super(client);
+
+    this._memberService = container.resolve(MemberService);
+  }
 
   setup() {
       this._router.get('/', async (req, res) => {
@@ -43,6 +53,23 @@ class GuildsRoute extends Route {
               return res.json(JSON.parse(e.message));
           }
       });
+
+      this._router.get('/:guildId/members', async (req, res) => {
+        try {
+          if (!req.params.guildId) throw new Error(JSON.stringify({ error: true, message: "Please provide a guildId querystring !" }));
+          
+          let members: Array<any> = (await this._memberService.getAllGuildMembers(req.params.guildId.toString())).map(member => ({
+            username: this._client.users.find(user => user.id === member.discordUserId).tag,
+            xpAmount: member.xpAmount,
+          }));
+
+          members.sort((a, b) => b.xpAmount > a.xpAmount ? 1 : -1);
+          
+          return res.json(members);
+        } catch (e) {
+          return res.send(e.message);
+        }
+    });
 
       return this._router;
   }

@@ -44,7 +44,6 @@ class MessageEventHandler extends EventHandler {
     this._memberService = container.resolve(MemberService);
     this._guildService = container.resolve(GuildService);
 
-    // TODO only enabled commands here !!
     this._loadCommands();
     this.onMessage("main", this._handleNewMessage);
   }
@@ -107,8 +106,8 @@ class MessageEventHandler extends EventHandler {
 
     Object.keys(CommandType).forEach((key: string) => {
       const commands = this._commands.filter(command => command.type === CommandType[key]).map(command => {
-        return `\`${process.env.BOT_PREFIX}${command.command} ${command.args.map(arg => `<${arg}>`).join(" ")}\`\n`;
-      }).join(" ");
+        return `\`${process.env.BOT_PREFIX}${command.command} ${command.args.map(arg => `<${arg}>`).join(" ")}\``;
+      }).join("\n");
 
       if (commands) {
         embed.addField(

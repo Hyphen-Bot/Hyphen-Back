@@ -52,7 +52,6 @@ class Server {
 
   registerRoutes() {
       this._app.use('/guilds', new GuildsRoute(this._client).setup());
-      this._app.use('/members', new MembersRoute(this._client).setup());
       this._app.use('/commands', new CommandsRoute(this._client).setup());
 
       // this._app.get('*', (req, res) => res.sendFile(path.join(`${__dirname}/../../../build/index.html`)));
