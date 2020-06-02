@@ -16,6 +16,8 @@
  */
 
 import Command from "./Command";
+import { Commands } from "./Commands";
+import { CommandType } from "./CommandType";
 import PingCommandHandler from "./PingCommandHandler";
 import RankCommandHandler from "./RankCommandHandler";
 import WarnCommandHandler from "./WarnCommandHandler";
@@ -23,14 +25,18 @@ import WarnsCommandHandler from "./WarnsCommandHandler";
 import PunchCommandHandler from "./PunchCommandHandler";
 import MuteCommandHandler from "./MuteCommandHandler";
 import UnmuteCommandHandler from "./UnmuteCommandHandler";
+import ClearCommandHandler from "./ClearCommandHandler";
 
 export {
   Command,
+  Commands,
+  CommandType,
   PingCommandHandler,
   RankCommandHandler,
   WarnCommandHandler,
   WarnsCommandHandler,
   PunchCommandHandler,
   MuteCommandHandler,
-  UnmuteCommandHandler
+  UnmuteCommandHandler,
+  ClearCommandHandler
 }

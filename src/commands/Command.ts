@@ -15,20 +15,23 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Message } from 'discord.js';
+import { Message, Permissions } from 'discord.js';
+import { CommandType } from './CommandType';
 
 class Command {
 
   _command: string;
   _args: Array<string>;
   _allowedPermissionFlags: Array<number>;
-  _onMessage: (listener: (message: Message) => void) => void;
+  _type: CommandType;
+  _onMessage: (name: string, listener: (message: Message) => void) => void;
   _callback: any;
 
-  constructor(command: string, args: Array<string>, allowedPermissionFlags: Array<number>, onMessage: (listener: (message: Message) => void) => void, callback: any) {
+  constructor(command: string, args: Array<string>, allowedPermissionFlags: Array<number>, type: CommandType, onMessage: (name: string, listener: (message: Message) => void) => void, callback: any) {
     this._command = command;
     this._args = args;
     this._allowedPermissionFlags = allowedPermissionFlags;
+    this._type = type;
     this._onMessage = onMessage;
     this._callback = callback;
 
@@ -43,7 +46,7 @@ class Command {
     const command = process.env.BOT_PREFIX + this._command;
 
     // message listener
-    this._onMessage((message: Message) => {
+    this._onMessage(this._command, (message: Message) => {
       let isUserAllowed = false;
 
       // is user allowed?
@@ -54,6 +57,9 @@ class Command {
       } else {
         isUserAllowed = true;
       }
+
+      const permissionNames = Object.keys(Permissions.FLAGS);
+      const permissionValues = Object.values(Permissions.FLAGS);
 
       if (message.content.split(" ").length > 1) {
         if (message.content.startsWith(command + " ")) {
@@ -68,14 +74,14 @@ class Command {
           });
 
           // return with arguments
-          if (!isUserAllowed) return message.channel.send("Missing permissions !");
+          if (!isUserAllowed) return message.channel.send(`Missing permissions ! Allowed: ${this._allowedPermissionFlags.length <= 0 ? "ALL" : this._allowedPermissionFlags.map(flag => permissionNames[permissionValues.indexOf(flag)]).join(", ")}`);
           new this._callback(message, { args, mentions: message.mentions.members.array() }).handle();
         }
       } else {
         if (message.content === command) {
 
           // return without arguments
-          if (!isUserAllowed) return message.channel.send("Missing permissions !");
+          if (!isUserAllowed) return message.channel.send(`Missing permissions ! Allowed: ${this._allowedPermissionFlags.length <= 0 ? "ALL" : this._allowedPermissionFlags.map(flag => permissionNames[permissionValues.indexOf(flag)]).join(", ")}`);
           new this._callback(message, {}).handle();
         }
       }
@@ -92,6 +98,10 @@ class Command {
 
   get allowedPermissionFlags(): Array<number> {
     return this._allowedPermissionFlags;
+  }
+
+  get type(): CommandType {
+    return this._type;
   }
 }
 

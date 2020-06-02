@@ -17,8 +17,10 @@
 
 import GuildsRoute from "./GuildsRoute";
 import MembersRoute from "./MembersRoute";
+import CommandsRoute from "./CommandsRoute";
 
 export {
   GuildsRoute,
-  MembersRoute
+  MembersRoute,
+  CommandsRoute
 }

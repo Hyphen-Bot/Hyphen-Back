@@ -25,18 +25,30 @@ class EventHandler {
 
   _commands: Array<Command>;
 
+  _messageListeners: any;
+
   constructor(client: Client, guild: Guild) {
     this._client = client;
     this._guild = guild;
     this._commands = [];
+    this._messageListeners = {};
   }
 
-  onMessage = (listener: (message: Message) => void) => {
-    this._client.on("message", (msg: Message) => {
-      if (msg.guild.id === this._guild.id) {
-        listener(msg);
-      }
-    });
+  _messageListener = (message: Message, listener: (message: Message) => void) => {
+    if (message.guild.id === this._guild.id) {
+      listener(message);
+    }
+  }
+
+  onMessage = (name: string, listener: (message: Message) => void) => {
+    const messageListener = (message: Message) => this._messageListener(message, listener);
+    this._messageListeners[name] = messageListener;
+    this._client.on("message", messageListener);
+  }
+
+  destroyMessageListener = (name: string) => {    
+    this._client.removeListener("message", this._messageListeners[name]);
+    delete this._messageListeners[name];
   }
 
   onChannelCreate = (listener: (channel: GuildChannel) => void) => {

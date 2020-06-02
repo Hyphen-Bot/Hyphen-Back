@@ -15,31 +15,15 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Entity, CreateDateColumn, PrimaryColumn, OneToMany, Column } from "typeorm";
-import Member from './Member';
-import Warn from './Warn';
+import { Message } from 'discord.js';
+import CommandHandler from './CommandHandler';
 
-@Entity()
-export default class Guild {
-
-    @PrimaryColumn()
-    id: string;
-
-    @Column()
-    language: string;
-
-    @OneToMany(type => Member, member => member.guild)
-    members: Member[];
-
-    @OneToMany(type => Warn, warn => warn.guild)
-    warns: Warn[];
-
-    @Column({ default: "[]" })
-    enabledCommands: string;
-
-    @Column({ nullable: true })
-    mutedRoleId: string;
-
-    @CreateDateColumn()
-    createdAt: Date;
+class ClearCommandHandler extends CommandHandler {
+  handler = async () => {
+    const deletedMessage = await this._message.channel.bulkDelete(this._payload.args.amount);
+    const message: Message = <Message>await this.send(`Successfully deleted ${deletedMessage.size} messages !`);
+    message.delete(5000);
+  }
 }
+
+export default ClearCommandHandler;

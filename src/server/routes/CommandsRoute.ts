@@ -15,31 +15,22 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Entity, CreateDateColumn, PrimaryColumn, OneToMany, Column } from "typeorm";
-import Member from './Member';
-import Warn from './Warn';
+import Route from "./Route";
+import { Commands } from './../../commands';
 
-@Entity()
-export default class Guild {
+class CommandsRoute extends Route {
 
-    @PrimaryColumn()
-    id: string;
+  setup() {
+      this._router.get('/', async (req, res) => {
+          try {            
+            return res.json(Object.values(Commands));
+          } catch (e) {
+            return res.send(e.message);
+          }
+      });
 
-    @Column()
-    language: string;
-
-    @OneToMany(type => Member, member => member.guild)
-    members: Member[];
-
-    @OneToMany(type => Warn, warn => warn.guild)
-    warns: Warn[];
-
-    @Column({ default: "[]" })
-    enabledCommands: string;
-
-    @Column({ nullable: true })
-    mutedRoleId: string;
-
-    @CreateDateColumn()
-    createdAt: Date;
+      return this._router;
+  }
 }
+
+export default CommandsRoute;

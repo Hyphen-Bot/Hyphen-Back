@@ -54,8 +54,8 @@ class CommandHandler {
   /**
    * Send a message with optional options in the current channel
    */
-  send = async (message: string, options?: MessageOptions | RichEmbed | Attachment) => {
-    await this._message.channel.send(message, options);
+  send = async (message: string, options?: MessageOptions | RichEmbed | Attachment): Promise<Message | Message[]> => {
+    return this._message.channel.send(message, options);
   }
 
   /**

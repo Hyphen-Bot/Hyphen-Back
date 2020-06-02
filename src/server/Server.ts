@@ -19,7 +19,7 @@ import { Client } from 'discord.js';
 import * as express from "express";
 import * as bearerToken from "express-bearer-token";
 import * as cors from "cors";
-import { GuildsRoute, MembersRoute } from './routes';
+import { GuildsRoute, MembersRoute, CommandsRoute } from './routes';
 
 class Server {
 
@@ -53,6 +53,7 @@ class Server {
   registerRoutes() {
       this._app.use('/guilds', new GuildsRoute(this._client).setup());
       this._app.use('/members', new MembersRoute(this._client).setup());
+      this._app.use('/commands', new CommandsRoute(this._client).setup());
 
       // this._app.get('*', (req, res) => res.sendFile(path.join(`${__dirname}/../../../build/index.html`)));
   }

@@ -17,6 +17,7 @@
 
 import { Connection, Repository } from 'typeorm';
 import { GuildEntity } from './entity';
+import { Commands } from '../commands';
 
 class GuildService {
 
@@ -39,6 +40,7 @@ class GuildService {
       const guild = new GuildEntity();
       guild.id = id;
       guild.language = language;
+      guild.enabledCommands = JSON.stringify(Object.values(Commands));
       return this._guildRepository.save(guild);
     }
 
@@ -49,6 +51,39 @@ class GuildService {
     const guild = await this.getGuild(id);
     guild.mutedRoleId = roleId;
     return this._guildRepository.save(guild);
+  }
+
+  async enableCommand(guildId: string, command: string): Promise<GuildEntity> {
+    if (!Object.keys(Commands).map(cmd => cmd.toLowerCase()).includes(command)) throw new Error("Command does not exist !");
+
+    const guild = await this.getGuild(guildId);
+    const enabledCommands = JSON.parse(guild.enabledCommands);
+    if (!enabledCommands.includes(command)) {
+      enabledCommands.push(command);
+      guild.enabledCommands = JSON.stringify(enabledCommands);
+
+      return this._guildRepository.save(guild);
+    }
+
+    return guild;
+  }
+
+  async disableCommand(guildId: string, command: string): Promise<GuildEntity> {
+    if (!Object.keys(Commands).map(cmd => cmd.toLowerCase()).includes(command)) throw new Error("Command does not exist !");
+
+    const guild = await this.getGuild(guildId);
+    const enabledCommands = JSON.parse(guild.enabledCommands);
+    if (enabledCommands.includes(command)) {
+      const tmp = [];
+      enabledCommands.forEach(cmd => {
+        if (command !== cmd) tmp.push(cmd);
+      });
+      guild.enabledCommands = JSON.stringify(tmp);
+
+      return this._guildRepository.save(guild);
+    }
+
+    return guild;
   }
 
 }
