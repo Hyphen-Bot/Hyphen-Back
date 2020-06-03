@@ -30,7 +30,9 @@ import {
   PunchCommandHandler, 
   MuteCommandHandler, 
   UnmuteCommandHandler, 
-  ClearCommandHandler
+  ClearCommandHandler,
+  KissCommandHandler,
+  SlapCommandHandler
 } from '../commands';
 import { MemberService, GuildService } from '../db';
 
@@ -69,6 +71,9 @@ class MessageEventHandler extends EventHandler {
     if (commands.includes(Commands.UNMUTE)) this._enableCommand(Commands.UNMUTE, ["member"], [Permissions.FLAGS.ADMINISTRATOR], CommandType.MODERATION, UnmuteCommandHandler);
     if (commands.includes(Commands.CLEAR)) this._enableCommand(Commands.CLEAR, ["amount"], [Permissions.FLAGS.ADMINISTRATOR],CommandType.MODERATION, ClearCommandHandler);
     if (commands.includes(Commands.PUNCH)) this._enableCommand(Commands.PUNCH, ["member"], [], CommandType.FUN, PunchCommandHandler);
+    if (commands.includes(Commands.KISS)) this._enableCommand(Commands.KISS, ["member"], [], CommandType.FUN, KissCommandHandler);
+    if (commands.includes(Commands.SLAP)) this._enableCommand(Commands.SLAP, ["member"], [], CommandType.FUN, SlapCommandHandler);
+
   }
 
   _handleReloadCommands = ({ guildId }: any) => {

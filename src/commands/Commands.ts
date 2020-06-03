@@ -23,5 +23,7 @@ export enum Commands {
   MUTE = "mute",
   UNMUTE = "unmute",
   CLEAR = "clear",
-  PUNCH = "punch"
+  PUNCH = "punch",
+  KISS = "kiss",
+  SLAP = "slap"
 }

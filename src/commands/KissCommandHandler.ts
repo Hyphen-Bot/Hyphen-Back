@@ -20,15 +20,15 @@ import fetch from "node-fetch";
 import CommandHandler from './CommandHandler';
 import { Color } from '../utils';
 
-class PunchCommandHandler extends CommandHandler {
+class KissCommandHandler extends CommandHandler {
   handler = async () => {
-    const response = await fetch('https://neko-love.xyz/api/v1/punch');
+    const response = await fetch('https://neko-love.xyz/api/v1/kiss');
     const json = await response.json();
 
     const target = this._payload.mentions ? this._payload.mentions[0].user.username : this.user.username;
     
     const embed = new MessageEmbed()
-      .setAuthor(`${this.user.username} punched ${target} 🤜`, this.user.displayAvatarURL())
+      .setAuthor(`${this.user.username} kissed ${target} 💋`, this.user.displayAvatarURL())
       .setColor(Color.random())
       .setImage(json.url);
 
@@ -36,4 +36,4 @@ class PunchCommandHandler extends CommandHandler {
   }
 }
 
-export default PunchCommandHandler;
+export default KissCommandHandler;

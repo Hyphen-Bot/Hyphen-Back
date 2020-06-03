@@ -26,6 +26,8 @@ import PunchCommandHandler from "./PunchCommandHandler";
 import MuteCommandHandler from "./MuteCommandHandler";
 import UnmuteCommandHandler from "./UnmuteCommandHandler";
 import ClearCommandHandler from "./ClearCommandHandler";
+import KissCommandHandler from "./KissCommandHandler";
+import SlapCommandHandler from "./SlapCommandHandler";
 
 export {
   Command,
@@ -38,5 +40,7 @@ export {
   PunchCommandHandler,
   MuteCommandHandler,
   UnmuteCommandHandler,
-  ClearCommandHandler
+  ClearCommandHandler,
+  KissCommandHandler,
+  SlapCommandHandler
 }
