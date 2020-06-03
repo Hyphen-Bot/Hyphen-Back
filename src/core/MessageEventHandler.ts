@@ -32,7 +32,8 @@ import {
   UnmuteCommandHandler, 
   ClearCommandHandler,
   KissCommandHandler,
-  SlapCommandHandler
+  SlapCommandHandler,
+  ImageCommandHandler
 } from '../commands';
 import { MemberService, GuildService } from '../db';
 
@@ -73,6 +74,7 @@ class MessageEventHandler extends EventHandler {
     if (commands.includes(Commands.PUNCH)) this._enableCommand(Commands.PUNCH, ["member"], [], CommandType.FUN, PunchCommandHandler);
     if (commands.includes(Commands.KISS)) this._enableCommand(Commands.KISS, ["member"], [], CommandType.FUN, KissCommandHandler);
     if (commands.includes(Commands.SLAP)) this._enableCommand(Commands.SLAP, ["member"], [], CommandType.FUN, SlapCommandHandler);
+    if (commands.includes(Commands.IMAGE)) this._enableCommand(Commands.IMAGE, ["effect", "amount", "imageUrl"], [], CommandType.TOOLS, ImageCommandHandler);
 
   }
 

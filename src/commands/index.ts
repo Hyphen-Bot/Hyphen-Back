@@ -28,6 +28,7 @@ import UnmuteCommandHandler from "./UnmuteCommandHandler";
 import ClearCommandHandler from "./ClearCommandHandler";
 import KissCommandHandler from "./KissCommandHandler";
 import SlapCommandHandler from "./SlapCommandHandler";
+import ImageCommandHandler from "./ImageCommandHandler";
 
 export {
   Command,
@@ -42,5 +43,6 @@ export {
   UnmuteCommandHandler,
   ClearCommandHandler,
   KissCommandHandler,
-  SlapCommandHandler
+  SlapCommandHandler,
+  ImageCommandHandler
 }

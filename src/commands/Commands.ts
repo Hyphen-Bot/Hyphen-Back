@@ -25,5 +25,6 @@ export enum Commands {
   CLEAR = "clear",
   PUNCH = "punch",
   KISS = "kiss",
-  SLAP = "slap"
+  SLAP = "slap",
+  IMAGE = "image"
 }

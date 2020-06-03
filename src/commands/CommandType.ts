@@ -19,5 +19,6 @@ export enum CommandType {
   COMMON,
   MODERATION,
   LEVEL,
+  TOOLS,
   FUN
 }
