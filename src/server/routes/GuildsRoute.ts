@@ -121,6 +121,21 @@ class GuildsRoute extends Route {
         }
       });
 
+       /**
+       * /{guild.id}/enabledCommands
+       */
+      this._router.get('/:guildId/enabledCommands', async (req, res) => {
+        try {          
+          const { guildId }: any = req.params;
+
+          const guild = await this._guildService.getGuild(guildId)
+          
+          return res.json(JSON.parse(guild.enabledCommands));
+        } catch (e) {
+          return res.send(e.message);
+        }
+      });
+
       return this._router;
   }
 }
