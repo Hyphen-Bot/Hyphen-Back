@@ -42,7 +42,7 @@ class RankCommandHandler extends CommandHandler {
     const ctx = canvas.getContext('2d')
 
     // background image
-    const background = await loadImage(this.user.displayAvatarURL());
+    const background = await loadImage(this.user.displayAvatarURL({format: "png" }));
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
     // filter
@@ -74,7 +74,7 @@ class RankCommandHandler extends CommandHandler {
     ctx.clip();
       
     // add user avatar
-    const avatar = await loadImage(this.user.displayAvatarURL());
+    const avatar = await loadImage(this.user.displayAvatarURL({ format: "png" }));
     ctx.drawImage(avatar, 50, 50, 150, 150);
 
     return canvas.toBuffer();
