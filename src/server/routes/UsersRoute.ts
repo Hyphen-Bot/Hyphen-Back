@@ -15,12 +15,23 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import GuildsRoute from "./GuildsRoute";
-import CommandsRoute from "./CommandsRoute";
-import UsersRoute from "./UsersRoute";
+import Route from "./Route";
+import DiscordApiClient from '../DiscordApiClient';
 
-export {
-  GuildsRoute,
-  CommandsRoute,
-  UsersRoute
+class UsersRoute extends Route {
+
+  setup() {
+      this._router.get('/me', async (req, res) => {
+          try {        
+            const me = await DiscordApiClient.getMe(req.token);    
+            return res.json(me);
+          } catch (e) {
+            return res.send(e.message);
+          }
+      });
+
+      return this._router;
+  }
 }
+
+export default UsersRoute;
