@@ -69,7 +69,7 @@ class GuildsRoute extends Route {
             const user = await this._client.users.fetch(member.discordUserId);
             return {
               username: user.tag,
-              avatarUrl: user.displayAvatarURL(),
+              avatarUrl: user.displayAvatarURL({ format: "png" }),
               xpAmount: member.xpAmount,
             }
           }));
