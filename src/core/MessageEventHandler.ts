@@ -86,12 +86,14 @@ class MessageEventHandler extends EventHandler {
     }
 
     if (message.content.startsWith(process.env.BOT_PREFIX + "enable")) {
+      if (this._commands.map(command => command.command).includes(message.content.split(" ")[1])) return message.channel.send("Command already enabled !");
       await this._guildService.enableCommand(this._guild.id, message.content.split(" ")[1]);
       await this._loadCommands();
       await message.channel.send("Command enabled !");
     }
 
     if (message.content.startsWith(process.env.BOT_PREFIX + "disable")) {
+      if (!this._commands.map(command => command.command).includes(message.content.split(" ")[1])) return message.channel.send("Command already disabled !");
       await this._guildService.disableCommand(this._guild.id, message.content.split(" ")[1]);
       await this._loadCommands();
       await message.channel.send("Command disabled !");
