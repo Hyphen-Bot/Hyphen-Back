@@ -65,10 +65,10 @@ class GuildsRoute extends Route {
        */
       this._router.get('/:guildId/members', async (req, res) => {
         try {          
-          let members: Array<any> = (await this._memberService.getAllGuildMembers(req.params.guildId.toString())).map(async member => ({
+          let members: Array<any> = await Promise.all((await this._memberService.getAllGuildMembers(req.params.guildId.toString())).map(async member => ({
             username: (await this._client.users.fetch(member.discordUserId)).tag,
             xpAmount: member.xpAmount,
-          }));
+          })));
 
           members.sort((a, b) => b.xpAmount > a.xpAmount ? 1 : -1);
           
