@@ -45,6 +45,9 @@ class EventHandler {
 
   onMessage = (name: string, listener: (message: Message) => void) => {
     const messageListener = (message: Message) => this._messageListener(message, listener);
+    if (this._messageListeners[name]) {
+      this.destroyMessageListener(name);
+    }
     this._messageListeners[name] = messageListener;
     this._client.on("message", messageListener);
   }
