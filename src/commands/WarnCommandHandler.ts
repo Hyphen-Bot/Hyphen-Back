@@ -15,7 +15,7 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { RichEmbed, Message } from 'discord.js';
+import { MessageEmbed, Message } from 'discord.js';
 import { container } from 'tsyringe';
 import CommandHandler from './CommandHandler';
 import { WarnService, MemberService } from '../db';
@@ -44,7 +44,7 @@ class WarnCommandHandler extends CommandHandler {
 
     await this._warnService.warnMember(this._payload.mentions[0].user.id, this.user.id, this._message.guild.id, reason);
 
-    const embed = new RichEmbed()
+    const embed = new MessageEmbed()
       .setAuthor(`Successfully warned ${this._payload.mentions[0].user.tag}`, this._payload.mentions[0].user.avatarURL)
       .setColor("#f8cd65")
       .setThumbnail("https://cdn.discordapp.com/attachments/717011525105090661/717082034169970688/289673858e06dfa2e0e3a7ee610c3a30.png")

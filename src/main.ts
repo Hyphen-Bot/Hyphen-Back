@@ -63,7 +63,7 @@ createConnection({
   // setup listeners
   client.on("ready", () => {
     Logger.info("Setting up guilds...");
-    client.guilds.forEach((guild: Guild) => GuildDispatcher.connectGuild(client, guild, apiEventEmitter));
+    client.guilds.cache.forEach((guild: Guild) => GuildDispatcher.connectGuild(client, guild, apiEventEmitter));
   });
 
   client.on("guildCreate", (guild: Guild) => {

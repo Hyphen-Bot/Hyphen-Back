@@ -15,7 +15,7 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { RichEmbed, Message } from 'discord.js';
+import { MessageEmbed, Message } from 'discord.js';
 import { container } from 'tsyringe';
 import * as moment from 'moment';
 import CommandHandler from './CommandHandler';
@@ -37,14 +37,14 @@ class WarnsCommandHandler extends CommandHandler {
 
     const warns: Warn[] = await this._warnService.getUserWarnsByGuild(this._payload.mentions[0].user.id, this.guild.id);
 
-    const embed = new RichEmbed()
+    const embed = new MessageEmbed()
       .setAuthor(`${this._payload.mentions[0].user.tag}'s warns`, this._payload.mentions[0].user.avatarURL)
       .setColor("#f8cd65")
       .setThumbnail("https://cdn.discordapp.com/attachments/717011525105090661/717082034169970688/289673858e06dfa2e0e3a7ee610c3a30.png")
-      .setFooter(`Requested by ${this.user.tag}`, this.user.avatarURL);
+      .setFooter(`Requested by ${this.user.tag}`, this.user.displayAvatarURL());
 
     for (const warn of warns.sort((a, b) => moment(b.createdAt).isSameOrBefore(moment(a.createdAt)) ? -1 : 1)) {
-      const byMember = await this._message.guild.fetchMember(warn.byMember.discordUserId);
+      const byMember = await this._message.guild.members.resolve(warn.byMember.discordUserId);
       embed.addField(moment(warn.createdAt).fromNow(), `${warn.reason}\n\`by ${byMember.user.tag}\``);
     }
 

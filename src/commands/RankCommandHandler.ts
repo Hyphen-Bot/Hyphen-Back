@@ -15,7 +15,7 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Message, Attachment } from 'discord.js';
+import { Message, MessageAttachment } from 'discord.js';
 import { container } from 'tsyringe';
 import { createCanvas, loadImage } from "canvas";
 import CommandHandler from './CommandHandler';
@@ -34,7 +34,7 @@ class RankCommandHandler extends CommandHandler {
   handler = async () => {
     const xpAmount = await this._memberService.getXpAmount(this.user.id, this.guild.id);
     const image = await this._generateImage(xpAmount);
-    await this.sendData(new Attachment(image));
+    await this.sendData(new MessageAttachment(image));
   }
 
   _generateImage = async (xpAmount) => {
@@ -42,7 +42,7 @@ class RankCommandHandler extends CommandHandler {
     const ctx = canvas.getContext('2d')
 
     // background image
-    const background = await loadImage(this.user.avatarURL);
+    const background = await loadImage(this.user.displayAvatarURL());
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
     // filter
@@ -74,7 +74,7 @@ class RankCommandHandler extends CommandHandler {
     ctx.clip();
       
     // add user avatar
-    const avatar = await loadImage(this.user.avatarURL);
+    const avatar = await loadImage(this.user.displayAvatarURL());
     ctx.drawImage(avatar, 50, 50, 150, 150);
 
     return canvas.toBuffer();

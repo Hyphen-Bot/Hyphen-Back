@@ -15,7 +15,7 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { RichEmbed, Message } from 'discord.js';
+import { MessageEmbed, Message } from 'discord.js';
 import { container } from 'tsyringe';
 import CommandHandler from './CommandHandler';
 import { GuildService } from '../db';
@@ -34,9 +34,9 @@ class UnmuteCommandHandler extends CommandHandler {
     if (!this._payload.mentions[0].guild) throw new Error("Please mention a valid user !");
 
     const mutedRoleId = (await this._guildService.getGuild(this.guild.id)).mutedRoleId;
-    await this.guild.member(this._payload.mentions[0].user.id).removeRole(mutedRoleId);
+    await this.guild.member(this._payload.mentions[0].user.id).roles.remove(mutedRoleId);
 
-    const embed = new RichEmbed()
+    const embed = new MessageEmbed()
       .setAuthor(`Successfully unmuted ${this._payload.mentions[0].user.tag}`, this._payload.mentions[0].user.avatarURL)
       .setFooter(`Unmuted by ${this.user.tag}`)
     

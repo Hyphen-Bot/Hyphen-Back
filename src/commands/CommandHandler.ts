@@ -15,7 +15,7 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Message, User, Attachment, MessageOptions, RichEmbed, Guild } from 'discord.js';
+import { Message, User, MessageAttachment, MessageOptions, MessageEmbed, Guild } from 'discord.js';
 import { Logger } from '../utils';
 
 class CommandHandler {
@@ -35,7 +35,7 @@ class CommandHandler {
     try {
       await this.handler();
     } catch (e) {
-      const embed = new RichEmbed()
+      const embed = new MessageEmbed()
         .setColor('#cc4137')
         .setTitle('An error occurred !')
         .setDescription(e.message)
@@ -54,14 +54,14 @@ class CommandHandler {
   /**
    * Send a message with optional options in the current channel
    */
-  send = async (message: string, options?: MessageOptions | RichEmbed | Attachment): Promise<Message | Message[]> => {
+  send = async (message: string, options?: MessageOptions | MessageEmbed | MessageAttachment): Promise<Message | Message[]> => {
     return this._message.channel.send(message, options);
   }
 
   /**
    * Send a data message (Embed, Attachment etc...) to the current channel
    */
-  sendData = async (options: MessageOptions | RichEmbed | Attachment) => {
+  sendData = async (options: MessageOptions | MessageEmbed | MessageAttachment) => {
     await this._message.channel.send(options);
   }
 

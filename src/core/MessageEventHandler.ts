@@ -15,7 +15,7 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Guild, Client, Message, Permissions, RichEmbed } from 'discord.js';
+import { Guild, Client, Message, Permissions, MessageEmbed } from 'discord.js';
 import { container } from 'tsyringe';
 import { EventEmitter } from 'events';
 import EventHandler from "./EventHandler";
@@ -109,12 +109,12 @@ class MessageEventHandler extends EventHandler {
   }
 
   _handleGenerateAndSendHelp = async (message: Message) => {
-    const embed = new RichEmbed()
+    const embed = new MessageEmbed()
       .setTitle("Commands enabled on this guild")
       .setDescription(`Format : \`${process.env.BOT_PREFIX}command <argument1> <argument2>...\``)
       .setColor("#3467eb")
       .setThumbnail("https://cdn.discordapp.com/attachments/717308535020584966/717308958599151666/--3.png")
-      .setFooter(`Requested by ${message.author.tag}`, message.author.avatarURL);
+      .setFooter(`Requested by ${message.author.tag}`, message.author.displayAvatarURL());
 
     Object.keys(CommandType).forEach((key: string) => {
       const commands = this._commands.filter(command => command.type === CommandType[key]).map(command => {

@@ -15,7 +15,7 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Guild, Permissions, Client } from 'discord.js';
+import { Permissions, Client } from 'discord.js';
 import { EventEmitter } from 'events';
 import { container } from 'tsyringe';
 import Route from "./Route";
@@ -46,11 +46,11 @@ class GuildsRoute extends Route {
               if (guilds.message) throw new Error(JSON.stringify(guilds));
 
               const tmp = [];
-              guilds.forEach((guild: Guild) => {
-                  if (this._client.guilds.find(g => g.id === guild.id)) {
-                      if (guild.me.permissions.hasPermission(Permissions.FLAGS.ADMINISTRATOR)) {
-                          tmp.push(guild);
-                      }
+              guilds.forEach((guild: any) => {
+                  if (this._client.guilds.resolve(guild.id)) {
+                    if (guild.permissions === 2147483647) { // if is admin
+                      tmp.push(guild);
+                    }
                   }
               });
   
@@ -65,8 +65,8 @@ class GuildsRoute extends Route {
        */
       this._router.get('/:guildId/members', async (req, res) => {
         try {          
-          let members: Array<any> = (await this._memberService.getAllGuildMembers(req.params.guildId.toString())).map(member => ({
-            username: this._client.users.find(user => user.id === member.discordUserId).tag,
+          let members: Array<any> = (await this._memberService.getAllGuildMembers(req.params.guildId.toString())).map(async member => ({
+            username: (await this._client.users.fetch(member.discordUserId)).tag,
             xpAmount: member.xpAmount,
           }));
 

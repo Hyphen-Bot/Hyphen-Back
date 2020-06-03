@@ -39,7 +39,7 @@ class ChannelCreateEventHandler extends EventHandler {
       const guild = await this._guildService.getGuild(this._guild.id);
 
       // add muted overwrite
-      await channel.overwritePermissions(guild.mutedRoleId, { SEND_MESSAGES: false, SPEAK: false });
+      await channel.overwritePermissions([{ id: guild.mutedRoleId, deny: ["SEND_MESSAGES", "SPEAK"] }], "Deny muted role to speak / write in channels.");
     }
   }
 }

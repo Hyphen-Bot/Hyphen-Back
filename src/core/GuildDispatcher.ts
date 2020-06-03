@@ -71,11 +71,11 @@ class GuildDispatcher {
       // initialize roles
       if (!guild.mutedRoleId) {
         Logger.info(`Adding Muted role to guild ${this._guild.id}...`);
-        const position = this._guild.member(this._client.user).highestRole.position - 1;
-        const { id } = await this._guild.createRole({ name: "Muted", permissions: 0, position });
+        const position = this._guild.member(this._client.user).roles.highest.position - 1;
+        const { id } = await this._guild.roles.create({ data: { name: "Muted", permissions: 0, position }, reason: "Initialize muted role." });
         await this._guildService.setGuildMutedRoleId(this._guild.id, id);
-        this._guild.channels.forEach(async (channel: GuildChannel) => {
-          await channel.overwritePermissions(id, { SEND_MESSAGES: false, SPEAK: false });
+        this._guild.channels.cache.forEach(async (channel: GuildChannel) => {
+          await channel.overwritePermissions([{ id, deny: ["SEND_MESSAGES", "SPEAK"] }], "Deny muted role to speak / write in channels.");
         });
       }
     } catch (e) {

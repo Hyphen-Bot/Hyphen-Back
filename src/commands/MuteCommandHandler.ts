@@ -15,7 +15,7 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { RichEmbed, Message } from 'discord.js';
+import { MessageEmbed, Message } from 'discord.js';
 import { container } from 'tsyringe';
 import CommandHandler from './CommandHandler';
 import { GuildService } from '../db';
@@ -36,9 +36,9 @@ class MuteCommandHandler extends CommandHandler {
     const reason = this._payload.args.reason ? this._payload.args.reason : "No reason provided!";
 
     const mutedRoleId = (await this._guildService.getGuild(this.guild.id)).mutedRoleId;
-    await this.guild.member(this._payload.mentions[0].user.id).addRole(mutedRoleId);
+    await this.guild.member(this._payload.mentions[0].user.id).roles.add(mutedRoleId);
 
-    const embed = new RichEmbed()
+    const embed = new MessageEmbed()
       .setAuthor(`Successfully muted ${this._payload.mentions[0].user.tag}`, this._payload.mentions[0].user.avatarURL)
       .setFooter(`Muted by ${this.user.tag}`)
       .addField("Reason", reason);

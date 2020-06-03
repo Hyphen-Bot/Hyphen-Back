@@ -15,7 +15,7 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { RichEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import fetch from "node-fetch";
 import CommandHandler from './CommandHandler';
 import { Color } from '../utils';
@@ -25,8 +25,8 @@ class PunchCommandHandler extends CommandHandler {
     const response = await fetch('https://neko-love.xyz/api/v1/punch');
     const json = await response.json();
     
-    const embed = new RichEmbed()
-      .setAuthor(`${this.user.username} punched ${this._payload.mentions[0].user.username} 🤜`, this.user.avatarURL)
+    const embed = new MessageEmbed()
+      .setAuthor(`${this.user.username} punched ${this._payload.mentions[0].user.username} 🤜`, this.user.displayAvatarURL())
       .setColor(Color.random())
       .setImage(json.url);
 

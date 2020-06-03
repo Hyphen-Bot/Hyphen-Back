@@ -30,7 +30,7 @@ class ApiEventHandler extends EventHandler {
 
   _handleSendMessage = async ({ guildId, channelId, message }: any) => {
     if (this._guild.id === guildId) {
-      const channel = <TextChannel>this._guild.channels.find(channel => channel.id === channelId);
+      const channel = <TextChannel>this._guild.channels.resolve(channelId);
       await channel.send(message);
     }
   }
