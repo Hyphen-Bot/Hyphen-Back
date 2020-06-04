@@ -39,7 +39,7 @@ class CommandDispatcher {
     this._onMessage = onMessage;
 
     this._command = this._commandHandler.metadata.command;
-    this._args = this._commandHandler.metadata.arguments ? this._commandHandler.metadata.arguments : [];
+    this._args = this._commandHandler.metadata.arguments;
     this._type = this._commandHandler.metadata.type;
     this._description = this._commandHandler.metadata.description;
     this._usage = this._commandHandler.metadata.usage;

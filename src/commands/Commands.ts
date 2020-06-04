@@ -26,5 +26,6 @@ export enum Commands {
   PUNCH = "punch",
   KISS = "kiss",
   SLAP = "slap",
-  IMAGE = "image"
+  IMAGE = "image",
+  TEMPMUTE = "tempmute"
 }

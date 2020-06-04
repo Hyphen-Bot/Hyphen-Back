@@ -77,6 +77,7 @@ class MessageEventHandler extends EventHandler {
     if (commands.includes(Commands.KISS)) this._enableCommand(KissCommandHandler, []);
     if (commands.includes(Commands.SLAP)) this._enableCommand(SlapCommandHandler, []);
     if (commands.includes(Commands.IMAGE)) this._enableCommand(ImageCommandHandler, []);
+    if (commands.includes(Commands.TEMPMUTE)) this._enableCommand(TempMuteCommandHandler, []);
 
   }
 
