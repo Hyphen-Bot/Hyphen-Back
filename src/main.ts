@@ -64,11 +64,13 @@ createConnection({
   client.on("ready", () => {
     Logger.info("Setting up guilds...");
     client.guilds.cache.forEach((guild: Guild) => GuildDispatcher.connectGuild(client, guild, apiEventEmitter));
+    client.user.setPresence({ activity: { name: client.guilds.cache.size + " servers.", type: "WATCHING", url: "http://142.93.173.241:3000" } });
   });
 
   client.on("guildCreate", (guild: Guild) => {
     Logger.info(`Client joined guild ${guild.id}. Setting up...`);
     GuildDispatcher.connectGuild(client, guild, apiEventEmitter);
+    client.user.setPresence({ activity: { name: client.guilds.cache.size + " servers.", type: "WATCHING", url: "http://142.93.173.241:3000" } });
   });
 
   // login client
