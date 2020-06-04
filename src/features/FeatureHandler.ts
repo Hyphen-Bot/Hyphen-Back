@@ -16,36 +16,32 @@
  */
 
 import { Message } from 'discord.js';
-import { CommandType } from './CommandType';
+import { Features } from './Features';
 import { Logger } from '../utils';
-import { Commands } from './Commands';
 
-class CommandMetadata {
-  public command: Commands;
+class FeatureMetadata {
+  public feature: Features;
   public description?: string;
-  public type: CommandType;
-  public usage?: string;
-  public arguments?: Array<string> = [];
 
-  public constructor(init?:Partial<CommandMetadata>) {
+  public constructor(init?:Partial<FeatureMetadata>) {
       Object.assign(this, init);
   }
 }
 
-class CommandHandler<T> {
+class FeatureHandler<T> {
 
-  private _metadata: CommandMetadata;
+  private _metadata: FeatureMetadata;
 
-  constructor(metadata: CommandMetadata) {
+  constructor(metadata: FeatureMetadata) {
     this._metadata = metadata;
   }
 
   /**
    * Default handler wrapper, responsible for error catching
    */
-  handle = async (message: Message, payload: any) => {
+  handle = async (message: Message) => {
     try {
-      await this.handler(message, payload);
+      await this.handler(message);
     } catch (e) {
       Logger.error(e);
     }
@@ -54,16 +50,16 @@ class CommandHandler<T> {
   /**
    * Public handler, this is the main command runtime
    */
-  handler = async (message: Message, payload: any) => {
+  handler = async (message: Message) => {
     // nothing
   }
   
   /**
    * Get the command metadata
    */
-  get metadata(): CommandMetadata {
+  get metadata(): FeatureMetadata {
     return this._metadata;
   }
 }
 
-export default CommandHandler;
+export default FeatureHandler;

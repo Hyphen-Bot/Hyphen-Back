@@ -15,34 +15,6 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Entity, CreateDateColumn, PrimaryColumn, OneToMany, Column } from "typeorm";
-import Member from './Member';
-import Warn from './Warn';
-
-@Entity()
-export default class Guild {
-
-    @PrimaryColumn()
-    id: string;
-
-    @Column()
-    language: string;
-
-    @OneToMany(type => Member, member => member.guild)
-    members: Member[];
-
-    @OneToMany(type => Warn, warn => warn.guild)
-    warns: Warn[];
-
-    @Column({ default: "[]" })
-    enabledCommands: string;
-
-    @Column({ default: "[]" })
-    enabledFeatures: string;
-
-    @Column({ nullable: true })
-    mutedRoleId: string;
-
-    @CreateDateColumn()
-    createdAt: Date;
+export enum Features {
+  QUOTE = "quote",
 }

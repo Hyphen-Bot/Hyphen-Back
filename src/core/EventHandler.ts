@@ -17,7 +17,8 @@
 
 import { Client, Guild, Message } from 'discord.js';
 import { EventEmitter } from 'events';
-import Command from '../commands/CommandDispatcher';
+import { CommandDispatcher } from '../commands';
+import { FeatureDispatcher } from '../features';
 
 class EventHandler {
   
@@ -25,7 +26,8 @@ class EventHandler {
   _guild: Guild;
   _apiEventEmitter: EventEmitter;
 
-  _commands: Array<Command>;
+  _commands: Array<CommandDispatcher>;
+  _features: Array<FeatureDispatcher>;
 
   _messageListeners: any;
 
@@ -34,6 +36,7 @@ class EventHandler {
     this._guild = guild;
     this._apiEventEmitter = apiEventEmitter;
     this._commands = [];
+    this._features = [];
     this._messageListeners = {};
   }
 

@@ -20,7 +20,8 @@ import { container } from 'tsyringe';
 import { EventEmitter } from 'events';
 import EventHandler from "./EventHandler";
 import { 
-  Command, 
+  CommandDispatcher, 
+  CommandHandler,
   Commands,
   CommandType,
   PingCommandHandler, 
@@ -37,7 +38,7 @@ import {
   TempMuteCommandHandler
 } from '../commands';
 import { MemberService, GuildService } from '../db';
-import CommandHandler from '../commands/CommandHandler';
+import { FeatureHandler, FeatureDispatcher, QuoteFeatureHandler, Features } from '../features';
 
 class MessageEventHandler extends EventHandler {
 
@@ -51,17 +52,19 @@ class MessageEventHandler extends EventHandler {
     this._guildService = container.resolve(GuildService);
 
     this._loadCommands();
+    this._loadFeatures();
 
     // listeners
     this.onMessage("main", this._handleNewMessage);
     this._apiEventEmitter.on("reloadCommands", this._handleReloadCommands);
+    this._apiEventEmitter.on("reloadFeatures", this._handleReloadFeatures);
   }
 
   _loadCommands = async () => {
     // initialize
     const commands = JSON.parse((await this._guildService.getGuild(this._guild.id)).enabledCommands);
-    this._commands.forEach((command: Command) => {
-      if (!commands.includes(command.command)) this._destroyCommand(command.command);
+    this._commands.forEach((command: CommandDispatcher) => {
+      if (!commands.includes(command.command)) this.destroyMessageListener(command.command);
     });
     this._commands = [];
 
@@ -81,10 +84,37 @@ class MessageEventHandler extends EventHandler {
 
   }
 
+  _loadFeatures = async () => {
+    // initialize
+    const features = JSON.parse((await this._guildService.getGuild(this._guild.id)).enabledFeatures);
+    this._features.forEach((feature: FeatureDispatcher) => {
+      if (!features.includes(feature.feature)) this.destroyMessageListener(feature.feature);
+    });
+    this._features = [];
+
+    // all features come here
+    if (features.includes(Features.QUOTE)) this._enableFeature(QuoteFeatureHandler);
+
+  }
+
   _handleReloadCommands = ({ guildId }: any) => {
     if (guildId === this._guild.id) {
       this._loadCommands();
     }
+  }
+
+  _handleReloadFeatures = ({ guildId }: any) => {
+    if (guildId === this._guild.id) {
+      this._loadFeatures();
+    }
+  }
+
+  _enableCommand = (handler: CommandHandler<any> | any, allowedPerms: Array<number>) => {
+    this._commands.push(new CommandDispatcher(handler, allowedPerms, this.onMessage));
+  }
+
+  _enableFeature = (handler: FeatureHandler<any> | any) => {
+    this._features.push(new FeatureDispatcher(handler, this.onMessage));
   }
 
   _handleNewMessage = async (message: Message) => {
@@ -94,28 +124,6 @@ class MessageEventHandler extends EventHandler {
     if (message.content.startsWith(process.env.BOT_PREFIX + "commands")) {
       return this._handleGenerateAndSendHelp(message, message.content.split(" ")[1]);
     }
-
-    if (message.content.startsWith(process.env.BOT_PREFIX + "enable")) {
-      if (this._commands.map(command => command.command).includes(message.content.split(" ")[1])) return message.channel.send("Command already enabled !");
-      await this._guildService.enableCommand(this._guild.id, message.content.split(" ")[1]);
-      await this._loadCommands();
-      await message.channel.send("Command enabled !");
-    }
-
-    if (message.content.startsWith(process.env.BOT_PREFIX + "disable")) {
-      if (!this._commands.map(command => command.command).includes(message.content.split(" ")[1])) return message.channel.send("Command already disabled !");
-      await this._guildService.disableCommand(this._guild.id, message.content.split(" ")[1]);
-      await this._loadCommands();
-      await message.channel.send("Command disabled !");
-    }
-  }
-
-  _enableCommand = (handler: CommandHandler<any> | any, allowedPerms: Array<number>) => {
-    this._commands.push(new Command(handler, allowedPerms, this.onMessage));
-  }
-
-  _destroyCommand = (command: string) => {
-    this.destroyMessageListener(command);
   }
 
   _handleGenerateAndSendHelp = async (message: Message, includeDetails?: any) => {

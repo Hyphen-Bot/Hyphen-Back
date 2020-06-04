@@ -15,7 +15,8 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Command from "./CommandDispatcher";
+import CommandDispatcher from "./CommandDispatcher";
+import CommandHandler from "./CommandHandler";
 import { Commands } from "./Commands";
 import { CommandType } from "./CommandType";
 import PingCommandHandler from "./Common/PingCommandHandler";
@@ -32,7 +33,8 @@ import ImageCommandHandler from "./Tools/ImageCommandHandler";
 import TempMuteCommandHandler from "./Moderation/TempMuteCommandHandler";
 
 export {
-  Command,
+  CommandDispatcher,
+  CommandHandler,
   Commands,
   CommandType,
   PingCommandHandler,

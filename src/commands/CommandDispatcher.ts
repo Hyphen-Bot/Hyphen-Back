@@ -21,7 +21,7 @@ import CommandHandler from './CommandHandler';
 
 class CommandDispatcher {
 
-  private _commandHandler: CommandHandler<any>;
+  private _handler: CommandHandler<any>;
   private _allowedPermissionFlags: Array<number>;
   private _onMessage: (name: string, listener: (message: Message) => void) => void;
 
@@ -32,26 +32,26 @@ class CommandDispatcher {
   private _description: string;
   private _usage: string;
 
-  constructor(commandHandler: CommandHandler<any>, allowedPermissionFlags: Array<number>, onMessage: (name: string, listener: (message: Message) => void) => void) {
+  constructor(handler: CommandHandler<any>, allowedPermissionFlags: Array<number>, onMessage: (name: string, listener: (message: Message) => void) => void) {
     // @ts-ignore
-    this._commandHandler = new commandHandler();
+    this._handler = new handler();
     this._allowedPermissionFlags = allowedPermissionFlags;
     this._onMessage = onMessage;
 
-    this._command = this._commandHandler.metadata.command;
-    this._args = this._commandHandler.metadata.arguments;
-    this._type = this._commandHandler.metadata.type;
-    this._description = this._commandHandler.metadata.description;
-    this._usage = this._commandHandler.metadata.usage;
+    this._command = this._handler.metadata.command;
+    this._args = this._handler.metadata.arguments;
+    this._type = this._handler.metadata.type;
+    this._description = this._handler.metadata.description;
+    this._usage = this._handler.metadata.usage;
 
     // start handler
-    this._handler();
+    this._init();
   }
 
   /**
    * default command listener & parser
    */
-  _handler = () => {
+  private _init = () => {
     const command = process.env.BOT_PREFIX + this._command;
 
     // message listener
@@ -84,14 +84,14 @@ class CommandDispatcher {
 
           // return with arguments
           if (!isUserAllowed) return message.channel.send(`Missing permissions ! Allowed: ${this._allowedPermissionFlags.length <= 0 ? "ALL" : this._allowedPermissionFlags.map(flag => permissionNames[permissionValues.indexOf(flag)]).join(", ")}`);
-          this._commandHandler.handle(message, { args, mentions: message.mentions.members.array() });
+          this._handler.handle(message, { args, mentions: message.mentions.members.array() });
         }
       } else {
         if (message.content === command) {
 
           // return without arguments
           if (!isUserAllowed) return message.channel.send(`Missing permissions ! Allowed: ${this._allowedPermissionFlags.length <= 0 ? "ALL" : this._allowedPermissionFlags.map(flag => permissionNames[permissionValues.indexOf(flag)]).join(", ")}`);
-          this._commandHandler.handle(message, {});
+          this._handler.handle(message, {});
         }
       }
     });
