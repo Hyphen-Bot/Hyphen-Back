@@ -18,17 +18,17 @@
 import Command from "./Command";
 import { Commands } from "./Commands";
 import { CommandType } from "./CommandType";
-import PingCommandHandler from "./PingCommandHandler";
-import RankCommandHandler from "./RankCommandHandler";
-import WarnCommandHandler from "./WarnCommandHandler";
-import WarnsCommandHandler from "./WarnsCommandHandler";
-import PunchCommandHandler from "./PunchCommandHandler";
-import MuteCommandHandler from "./MuteCommandHandler";
-import UnmuteCommandHandler from "./UnmuteCommandHandler";
-import ClearCommandHandler from "./ClearCommandHandler";
-import KissCommandHandler from "./KissCommandHandler";
-import SlapCommandHandler from "./SlapCommandHandler";
-import ImageCommandHandler from "./ImageCommandHandler";
+import PingCommandHandler from "./Common/PingCommandHandler";
+import RankCommandHandler from "./Level/RankCommandHandler";
+import WarnCommandHandler from "./Moderation/WarnCommandHandler";
+import WarnsCommandHandler from "./Moderation/WarnsCommandHandler";
+import PunchCommandHandler from "./Fun/PunchCommandHandler";
+import MuteCommandHandler from "./Moderation/MuteCommandHandler";
+import UnmuteCommandHandler from "./Moderation/UnmuteCommandHandler";
+import ClearCommandHandler from "./Moderation/ClearCommandHandler";
+import KissCommandHandler from "./Fun/KissCommandHandler";
+import SlapCommandHandler from "./Fun/SlapCommandHandler";
+import ImageCommandHandler from "./Tools/ImageCommandHandler";
 
 export {
   Command,

@@ -15,25 +15,15 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { MessageEmbed } from 'discord.js';
-import fetch from "node-fetch";
-import CommandHandler from './CommandHandler';
-import { Color } from '../utils';
+import { Message } from 'discord.js';
+import CommandHandler from '../CommandHandler';
 
-class SlapCommandHandler extends CommandHandler {
+class ClearCommandHandler extends CommandHandler {
   handler = async () => {
-    const response = await fetch('https://neko-love.xyz/api/v1/slap');
-    const json = await response.json();
-
-    const target = this._payload.mentions ? this._payload.mentions[0].user.username : this.user.username;
-    
-    const embed = new MessageEmbed()
-      .setAuthor(`${this.user.username} slapped ${target} 🖐`, this.user.displayAvatarURL())
-      .setColor(Color.random())
-      .setImage(json.url);
-
-    await this.sendData(embed);
+    const deletedMessage = await this._message.channel.bulkDelete(this._payload.args.amount);
+    const message: Message = <Message>await this.send(`Successfully deleted ${deletedMessage.size} messages !`);
+    message.delete({ timeout: 5000 });
   }
 }
 
-export default SlapCommandHandler;
+export default ClearCommandHandler;

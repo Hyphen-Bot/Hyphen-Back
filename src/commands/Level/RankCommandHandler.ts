@@ -18,8 +18,8 @@
 import { Message, MessageAttachment } from 'discord.js';
 import { container } from 'tsyringe';
 import { createCanvas, loadImage } from "canvas";
-import CommandHandler from './CommandHandler';
-import { MemberService } from '../db';
+import CommandHandler from '../CommandHandler';
+import { MemberService } from '../../db';
 
 class RankCommandHandler extends CommandHandler {
 

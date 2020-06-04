@@ -17,7 +17,7 @@
 
 import { Message } from 'discord.js';
 import * as moment from "moment";
-import CommandHandler from './CommandHandler';
+import CommandHandler from '../CommandHandler';
 
 class PingCommandHandler extends CommandHandler {
   handler = async () => {

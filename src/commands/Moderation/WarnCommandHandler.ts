@@ -17,43 +17,42 @@
 
 import { MessageEmbed, Message } from 'discord.js';
 import { container } from 'tsyringe';
-import * as moment from 'moment';
-import CommandHandler from './CommandHandler';
-import { WarnService } from '../db';
-import Warn from '../db/entity/Warn';
+import CommandHandler from '../CommandHandler';
+import { WarnService, MemberService } from '../../db';
 
-class WarnsCommandHandler extends CommandHandler {
+class WarnCommandHandler extends CommandHandler {
 
   _warnService: WarnService;
+  _memberService: MemberService;
 
   constructor(message: Message, payload: any) {
     super(message, payload);
 
     this._warnService = container.resolve(WarnService);
+    this._memberService = container.resolve(MemberService);
   }
 
   handler = async () => {
     if (!this._payload.mentions[0].guild) throw new Error("Please mention a valid user !");
 
-    const warns: Warn[] = await this._warnService.getUserWarnsByGuild(this._payload.mentions[0].user.id, this.guild.id);
+    const reason = this._payload.args.reason ? this._payload.args.reason : "No reason provided!";
+
+    const member = await this._memberService.getGuildMemberByDiscordId(this._payload.mentions[0].user.id, this.guild.id);
+    if (!member) {
+      await this._memberService.addMember(this._payload.mentions[0].user.id, this._message.guild.id, "en");
+    }
+
+    await this._warnService.warnMember(this._payload.mentions[0].user.id, this.user.id, this._message.guild.id, reason);
 
     const embed = new MessageEmbed()
-      .setAuthor(`${this._payload.mentions[0].user.tag}'s warns`, this._payload.mentions[0].user.avatarURL)
+      .setAuthor(`Successfully warned ${this._payload.mentions[0].user.tag}`, this._payload.mentions[0].user.avatarURL)
       .setColor("#f8cd65")
       .setThumbnail("https://cdn.discordapp.com/attachments/717011525105090661/717082034169970688/289673858e06dfa2e0e3a7ee610c3a30.png")
-      .setFooter(`Requested by ${this.user.tag}`, this.user.displayAvatarURL());
-
-    for (const warn of warns.sort((a, b) => moment(b.createdAt).isSameOrBefore(moment(a.createdAt)) ? -1 : 1)) {
-      const byMember = await this._message.guild.members.resolve(warn.byMember.discordUserId);
-      embed.addField(moment(warn.createdAt).fromNow(), `${warn.reason}\n\`by ${byMember.user.tag}\``);
-    }
-
-    if (warns.length <= 0) {
-      embed.setDescription("This user does not have any warns!");
-    }
+      .setFooter(`Warned by ${this.user.tag}`)
+      .addField("Reason", reason);
     
     await this.sendData(embed);
   }
 }
 
-export default WarnsCommandHandler;
+export default WarnCommandHandler;

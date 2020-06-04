@@ -17,8 +17,8 @@
 
 import { MessageAttachment } from 'discord.js';
 import * as jimp from 'jimp';
-import CommandHandler from './CommandHandler';
-import { Color } from '../utils';
+import CommandHandler from '../CommandHandler';
+import { Color } from '../../utils';
 
 class ImageCommandHandler extends CommandHandler {
   handler = async () => {

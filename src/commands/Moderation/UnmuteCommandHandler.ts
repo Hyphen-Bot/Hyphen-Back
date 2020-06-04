@@ -17,8 +17,8 @@
 
 import { MessageEmbed, Message } from 'discord.js';
 import { container } from 'tsyringe';
-import CommandHandler from './CommandHandler';
-import { GuildService } from '../db';
+import CommandHandler from '../CommandHandler';
+import { GuildService } from '../../db';
 
 class UnmuteCommandHandler extends CommandHandler {
 

@@ -17,18 +17,18 @@
 
 import { MessageEmbed } from 'discord.js';
 import fetch from "node-fetch";
-import CommandHandler from './CommandHandler';
-import { Color } from '../utils';
+import CommandHandler from '../CommandHandler';
+import { Color } from '../../utils';
 
-class KissCommandHandler extends CommandHandler {
+class SlapCommandHandler extends CommandHandler {
   handler = async () => {
-    const response = await fetch('https://neko-love.xyz/api/v1/kiss');
+    const response = await fetch('https://neko-love.xyz/api/v1/slap');
     const json = await response.json();
 
     const target = this._payload.mentions ? this._payload.mentions[0].user.username : this.user.username;
     
     const embed = new MessageEmbed()
-      .setAuthor(`${this.user.username} kissed ${target} 💋`, this.user.displayAvatarURL())
+      .setAuthor(`${this.user.username} slapped ${target} 🖐`, this.user.displayAvatarURL())
       .setColor(Color.random())
       .setImage(json.url);
 
@@ -36,4 +36,4 @@ class KissCommandHandler extends CommandHandler {
   }
 }
 
-export default KissCommandHandler;
+export default SlapCommandHandler;

@@ -17,8 +17,8 @@
 
 import { MessageEmbed } from 'discord.js';
 import fetch from "node-fetch";
-import CommandHandler from './CommandHandler';
-import { Color } from '../utils';
+import CommandHandler from '../CommandHandler';
+import { Color } from '../../utils';
 
 class PunchCommandHandler extends CommandHandler {
   handler = async () => {
