@@ -15,12 +15,14 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import { Message } from 'discord.js';
 import * as moment from "moment";
 import CommandHandler from './CommandHandler';
 
 class PingCommandHandler extends CommandHandler {
   handler = async () => {
-    await this.send(`Pong ! (${Math.abs(moment().milliseconds() - moment(this._message.createdAt).milliseconds())} ms)`);
+    const message: Message = <Message>await this.send(`Calculating...`);
+    await message.edit(Math.abs(moment(message.createdTimestamp).milliseconds() - moment(this._message.createdTimestamp).milliseconds()) + " ms");
   }
 }
 
