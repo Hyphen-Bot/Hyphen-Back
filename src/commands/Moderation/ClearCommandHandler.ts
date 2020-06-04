@@ -15,7 +15,7 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Message } from 'discord.js';
+import { Message, GuildMember } from 'discord.js';
 import CommandHandler from '../CommandHandler';
 import { CommandType } from '../CommandType';
 import { Commands } from '../Commands';
@@ -26,16 +26,30 @@ class ClearCommandHandler extends CommandHandler<ClearCommandHandler> {
     super({
       command: Commands.CLEAR,
       type: CommandType.MODERATION,
-      arguments: ["amount"],
-      description: "Clears a specific amount of messages in the channel."
+      arguments: ["amount", "toDelete"],
+      usage: "<amount> <member / keyword>",
+      description: "Clears a specific amount of messages in the channel. You can specify a member or a keyword."
     });
   }
 
   handler = async (message: Message, payload: any) => {
     await message.delete();
-    const deletedMessage = await message.channel.bulkDelete(payload.args.amount);
-    const msg: Message = <Message>await message.channel.send(`Successfully cleared ${deletedMessage.size} messages !`);
-    msg.delete({ timeout: 2000 });
+
+    let amount = 0;
+
+    if (payload.args.toDelete) {
+      if (payload.mentions[0]) {
+        amount = (await message.channel.bulkDelete((await message.channel.messages.fetch()).filter(msg => msg.author.id === payload.mentions[0].id).first(payload.args.amount).map(msg => msg.id))).size;
+      } else {
+        amount = (await message.channel.bulkDelete((await message.channel.messages.fetch()).filter(msg => msg.content.includes(payload.args.toDelete)).first(payload.args.amount).map(msg => msg.id))).size;
+      }
+    } else {
+      amount = (await message.channel.bulkDelete(payload.args.amount)).size;
+    }
+
+    message.channel.send(`Successfully cleared ${amount} messages !`).then(msg => {
+      msg.delete({ timeout: 2000 });
+    });
   }
 }
 
