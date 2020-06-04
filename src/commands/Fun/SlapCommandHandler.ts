@@ -26,7 +26,7 @@ class SlapCommandHandler extends CommandHandler<SlapCommandHandler> {
 
   constructor() {
     super({
-      command: Commands.PUNCH,
+      command: Commands.SLAP,
       type: CommandType.FUN,
       arguments: ["member"],
       description: "Slap someone !"
