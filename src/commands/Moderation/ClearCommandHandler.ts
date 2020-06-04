@@ -33,8 +33,8 @@ class ClearCommandHandler extends CommandHandler<ClearCommandHandler> {
 
   handler = async (message: Message, payload: any) => {
     const deletedMessage = await message.channel.bulkDelete(payload.args.amount);
-    const msg: Message = <Message>await message.channel.send(`Successfully deleted ${deletedMessage.size} messages !`);
-    msg.delete({ timeout: 5000 });
+    const msg: Message = <Message>await message.channel.send(`Successfully cleared ${deletedMessage.size} messages !`);
+    msg.delete({ timeout: 2000 });
   }
 }
 
