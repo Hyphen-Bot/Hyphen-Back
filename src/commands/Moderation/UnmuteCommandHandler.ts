@@ -30,7 +30,8 @@ class UnmuteCommandHandler extends CommandHandler<UnmuteCommandHandler> {
     super({
       command: Commands.UNMUTE,
       type: CommandType.MODERATION,
-      arguments: ["member"]
+      arguments: ["member"],
+      description: "Unmute a muted member on the server."
     });
 
     this._guildService = container.resolve(GuildService);

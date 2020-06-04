@@ -28,7 +28,8 @@ class SlapCommandHandler extends CommandHandler<SlapCommandHandler> {
     super({
       command: Commands.PUNCH,
       type: CommandType.FUN,
-      arguments: ["member"]
+      arguments: ["member"],
+      description: "Slap someone !"
     });
   }
 

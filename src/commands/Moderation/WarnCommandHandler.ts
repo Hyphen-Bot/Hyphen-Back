@@ -31,7 +31,8 @@ class WarnCommandHandler extends CommandHandler<WarnCommandHandler> {
     super({
       command: Commands.WARN,
       type: CommandType.MODERATION,
-      arguments: ["member", "reason"]
+      arguments: ["member", "reason"],
+      description: "Warn a member on the server. Reason is optional."
     });
 
     this._warnService = container.resolve(WarnService);

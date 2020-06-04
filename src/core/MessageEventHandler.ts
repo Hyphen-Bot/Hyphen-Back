@@ -91,8 +91,8 @@ class MessageEventHandler extends EventHandler {
     await this._memberService.addMember(message.author.id, this._guild.id, "en");
     await this._memberService.increaseXpAmount(message.author.id, this._guild.id);
 
-    if (message.content.startsWith(process.env.BOT_PREFIX + "help")) {
-      return this._handleGenerateAndSendHelp(message);
+    if (message.content.startsWith(process.env.BOT_PREFIX + "commands")) {
+      return this._handleGenerateAndSendHelp(message, message.content.split(" ")[1]);
     }
 
     if (message.content.startsWith(process.env.BOT_PREFIX + "enable")) {
@@ -118,22 +118,31 @@ class MessageEventHandler extends EventHandler {
     this.destroyMessageListener(command);
   }
 
-  _handleGenerateAndSendHelp = async (message: Message) => {
+  _handleGenerateAndSendHelp = async (message: Message, includeDetails?: any) => {
     const embed = new MessageEmbed()
-      .setTitle("Commands enabled on this guild")
-      .setDescription(`Format : \`${process.env.BOT_PREFIX}command <argument1> <argument2>...\``)
+      .setTitle("Guild Commands")
+      .setDescription(`This is the list of all the commands that are enabled on this guild. Please see the dashboard to have a list of all the available commands and to manage them !`)
       .setColor("#3467eb")
       .setThumbnail("https://cdn.discordapp.com/attachments/717308535020584966/717308958599151666/--3.png")
       .setFooter(`Requested by ${message.author.tag}`, message.author.displayAvatarURL());
 
+    const permissionNames = Object.keys(Permissions.FLAGS);
+    const permissionValues = Object.values(Permissions.FLAGS);
+
     Object.keys(CommandType).forEach((key: string) => {
       const commands = this._commands.filter(command => command.type === CommandType[key]).map(command => {
-        return `\`${process.env.BOT_PREFIX}${command.command} ${command.args.map(arg => `<${arg}>`).join(" ")}\``;
+        return (
+          `\`${process.env.BOT_PREFIX}${command.command} ${command.usage ? process.env.BOT_PREFIX + command.usage : (command.args ? command.args.map(arg => `<${arg}>`).join(" ") : "")}\`` +
+          `${includeDetails ? 
+            `\n${command.description ? `${command.description}` + "\n" : ""}` +
+            `**Allowed for :** ${command.allowedPermissionFlags.length <= 0 ? "everyone" : command.allowedPermissionFlags.map(flag => permissionNames[permissionValues.indexOf(flag)].toLowerCase()).join(", ")}\n`
+          : ""}`
+        );
       }).join("\n");
 
       if (commands) {
         embed.addField(
-          key, 
+          key[0] + key.substr(1, key.length).toLowerCase(), 
           commands
         );
       }

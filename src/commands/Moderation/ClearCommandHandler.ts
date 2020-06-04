@@ -26,7 +26,8 @@ class ClearCommandHandler extends CommandHandler<ClearCommandHandler> {
     super({
       command: Commands.CLEAR,
       type: CommandType.MODERATION,
-      arguments: ["amount"]
+      arguments: ["amount"],
+      description: "Clears a specific amount of messages in the channel."
     });
   }
 

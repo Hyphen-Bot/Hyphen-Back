@@ -26,7 +26,8 @@ class PingCommandHandler extends CommandHandler<PingCommandHandler> {
   constructor() {
     super({
       command: Commands.PING,
-      type: CommandType.COMMON
+      type: CommandType.COMMON,
+      description: "Returns bot's gateway ping in milliseconds."
     });
   }
 

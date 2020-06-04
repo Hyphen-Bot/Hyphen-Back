@@ -28,7 +28,8 @@ class KissCommandHandler extends CommandHandler<KissCommandHandler> {
     super({
       command: Commands.KISS,
       type: CommandType.FUN,
-      arguments: ["member"]
+      arguments: ["member"],
+      description: "Kiss a member on this server !",
     });
   }
 

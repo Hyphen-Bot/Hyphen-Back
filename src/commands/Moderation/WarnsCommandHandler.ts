@@ -32,7 +32,8 @@ class WarnsCommandHandler extends CommandHandler<WarnsCommandHandler> {
     super({
       command: Commands.WARNS,
       type: CommandType.MODERATION,
-      arguments: ["member"]
+      arguments: ["member"],
+      description: "Show users's warns. If member is not specified, it will show your own warns."
     });
 
     this._warnService = container.resolve(WarnService);

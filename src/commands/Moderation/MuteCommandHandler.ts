@@ -30,7 +30,8 @@ class MuteCommandHandler extends CommandHandler<MuteCommandHandler> {
     super({
       command: Commands.MUTE,
       type: CommandType.MODERATION,
-      arguments: ["member", "reason"]
+      arguments: ["member", "reason"],
+      description: "Mute a member on the server. The reason is optional."
     });
 
     this._guildService = container.resolve(GuildService);

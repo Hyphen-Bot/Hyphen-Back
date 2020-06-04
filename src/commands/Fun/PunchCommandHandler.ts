@@ -28,7 +28,8 @@ class PunchCommandHandler extends CommandHandler<PunchCommandHandler> {
     super({
       command: Commands.PUNCH,
       type: CommandType.FUN,
-      arguments: ["member"]
+      arguments: ["member"],
+      description: "Punch a member !"
     });
   }
 

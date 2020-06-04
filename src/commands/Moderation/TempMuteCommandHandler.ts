@@ -29,7 +29,8 @@ class MuteCommandHandler extends CommandHandler<TempMuteCommandHandler> {
     super({
       command: Commands.TEMPMUTE,
       type: CommandType.MODERATION,
-      arguments: ["member", "timeoutMn", "reason"]
+      arguments: ["member", "timeoutMn", "reason"],
+      description: "Temporary mute a member on the server. Timeout's default is 10 minutes, and the reason is optional."
     });
 
     this._guildService = container.resolve(GuildService);

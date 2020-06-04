@@ -28,7 +28,8 @@ class ImageCommandHandler extends CommandHandler<ImageCommandHandler> {
     super({
       command: Commands.IMAGE,
       type: CommandType.TOOLS,
-      arguments: ["effect", "amount", "imageUrl"]
+      arguments: ["effect", "amount", "imageUrl"],
+      description: "Apply effects on a given image. Effect can be `blur`, `pixelate` and many more... Amount is how much the effect should be applied (default 10) and imageUrl is optional. You can also attach an image to your message."
     });
   }
 
@@ -42,7 +43,7 @@ class ImageCommandHandler extends CommandHandler<ImageCommandHandler> {
       }
     }
 
-    if (!amount) amount = 50;
+    if (!amount) amount = 10;
     else amount = parseInt(amount);
 
     const image = await jimp.read(imageUrl);

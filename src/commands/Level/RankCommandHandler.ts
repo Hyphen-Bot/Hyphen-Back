@@ -30,7 +30,8 @@ class RankCommandHandler extends CommandHandler<RankCommandHandler> {
   constructor() {
     super({
       command: Commands.RANK,
-      type: CommandType.LEVEL
+      type: CommandType.LEVEL,
+      description: "See your rank on this server."
     });
 
     this._memberService = container.resolve(MemberService);
