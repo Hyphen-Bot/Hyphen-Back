@@ -15,7 +15,7 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Command from "./Command";
+import Command from "./CommandDispatcher";
 import { Commands } from "./Commands";
 import { CommandType } from "./CommandType";
 import PingCommandHandler from "./Common/PingCommandHandler";
@@ -29,6 +29,7 @@ import ClearCommandHandler from "./Moderation/ClearCommandHandler";
 import KissCommandHandler from "./Fun/KissCommandHandler";
 import SlapCommandHandler from "./Fun/SlapCommandHandler";
 import ImageCommandHandler from "./Tools/ImageCommandHandler";
+import TempMuteCommandHandler from "./Moderation/TempMuteCommandHandler";
 
 export {
   Command,
@@ -44,5 +45,6 @@ export {
   ClearCommandHandler,
   KissCommandHandler,
   SlapCommandHandler,
-  ImageCommandHandler
+  ImageCommandHandler,
+  TempMuteCommandHandler
 }

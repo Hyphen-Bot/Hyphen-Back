@@ -19,31 +19,37 @@ import { MessageEmbed, Message } from 'discord.js';
 import { container } from 'tsyringe';
 import CommandHandler from '../CommandHandler';
 import { GuildService } from '../../db';
+import { CommandType } from '../CommandType';
+import { Commands } from '../Commands';
 
-class MuteCommandHandler extends CommandHandler {
+class MuteCommandHandler extends CommandHandler<MuteCommandHandler> {
 
   _guildService: GuildService;
 
-  constructor(message: Message, payload: any) {
-    super(message, payload);
+  constructor() {
+    super({
+      command: Commands.MUTE,
+      type: CommandType.MODERATION,
+      arguments: ["member", "reason"]
+    });
 
     this._guildService = container.resolve(GuildService);
   }
 
-  handler = async () => {
-    if (!this._payload.mentions[0].guild) throw new Error("Please mention a valid user !");
+  handler = async (message: Message, payload: any) => {
+    if (!payload.mentions[0].guild) throw new Error("Please mention a valid user !");
 
-    const reason = this._payload.args.reason ? this._payload.args.reason : "No reason provided!";
+    const reason = payload.args.reason ? payload.args.reason : "No reason provided!";
 
-    const mutedRoleId = (await this._guildService.getGuild(this.guild.id)).mutedRoleId;
-    await this.guild.member(this._payload.mentions[0].user.id).roles.add(mutedRoleId);
+    const mutedRoleId = (await this._guildService.getGuild(message.guild.id)).mutedRoleId;
+    await message.guild.member(payload.mentions[0].user.id).roles.add(mutedRoleId);
 
     const embed = new MessageEmbed()
-      .setAuthor(`Successfully muted ${this._payload.mentions[0].user.tag}`, this._payload.mentions[0].user.avatarURL)
-      .setFooter(`Muted by ${this.user.tag}`)
+      .setAuthor(`Successfully muted ${payload.mentions[0].user.tag}`, payload.mentions[0].user.avatarURL)
+      .setFooter(`Muted by ${message.author.tag}`)
       .addField("Reason", reason);
     
-    await this.sendData(embed);
+    await message.channel.send(embed);
   }
 }
 

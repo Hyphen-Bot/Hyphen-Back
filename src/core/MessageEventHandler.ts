@@ -33,9 +33,11 @@ import {
   ClearCommandHandler,
   KissCommandHandler,
   SlapCommandHandler,
-  ImageCommandHandler
+  ImageCommandHandler,
+  TempMuteCommandHandler
 } from '../commands';
 import { MemberService, GuildService } from '../db';
+import CommandHandler from '../commands/CommandHandler';
 
 class MessageEventHandler extends EventHandler {
 
@@ -64,17 +66,17 @@ class MessageEventHandler extends EventHandler {
     this._commands = [];
 
     // all commands come here
-    if (commands.includes(Commands.PING)) this._enableCommand(Commands.PING, [], [], CommandType.COMMON, PingCommandHandler);
-    if (commands.includes(Commands.RANK)) this._enableCommand(Commands.RANK, [], [], CommandType.LEVEL, RankCommandHandler);
-    if (commands.includes(Commands.WARN)) this._enableCommand(Commands.WARN, ["member", "reason"], [Permissions.FLAGS.ADMINISTRATOR], CommandType.MODERATION, WarnCommandHandler);
-    if (commands.includes(Commands.WARNS)) this._enableCommand(Commands.WARNS, ["member"], [Permissions.FLAGS.ADMINISTRATOR], CommandType.MODERATION, WarnsCommandHandler);
-    if (commands.includes(Commands.MUTE)) this._enableCommand(Commands.MUTE, ["member", "reason"], [Permissions.FLAGS.ADMINISTRATOR], CommandType.MODERATION, MuteCommandHandler);
-    if (commands.includes(Commands.UNMUTE)) this._enableCommand(Commands.UNMUTE, ["member"], [Permissions.FLAGS.ADMINISTRATOR], CommandType.MODERATION, UnmuteCommandHandler);
-    if (commands.includes(Commands.CLEAR)) this._enableCommand(Commands.CLEAR, ["amount"], [Permissions.FLAGS.ADMINISTRATOR],CommandType.MODERATION, ClearCommandHandler);
-    if (commands.includes(Commands.PUNCH)) this._enableCommand(Commands.PUNCH, ["member"], [], CommandType.FUN, PunchCommandHandler);
-    if (commands.includes(Commands.KISS)) this._enableCommand(Commands.KISS, ["member"], [], CommandType.FUN, KissCommandHandler);
-    if (commands.includes(Commands.SLAP)) this._enableCommand(Commands.SLAP, ["member"], [], CommandType.FUN, SlapCommandHandler);
-    if (commands.includes(Commands.IMAGE)) this._enableCommand(Commands.IMAGE, ["effect", "amount", "imageUrl"], [], CommandType.TOOLS, ImageCommandHandler);
+    if (commands.includes(Commands.PING)) this._enableCommand(PingCommandHandler, []);
+    if (commands.includes(Commands.RANK)) this._enableCommand(RankCommandHandler, []);
+    if (commands.includes(Commands.WARN)) this._enableCommand(WarnCommandHandler, [Permissions.FLAGS.ADMINISTRATOR]);
+    if (commands.includes(Commands.WARNS)) this._enableCommand(WarnsCommandHandler, [Permissions.FLAGS.ADMINISTRATOR]);
+    if (commands.includes(Commands.MUTE)) this._enableCommand(MuteCommandHandler, [Permissions.FLAGS.ADMINISTRATOR]);
+    if (commands.includes(Commands.UNMUTE)) this._enableCommand(UnmuteCommandHandler, [Permissions.FLAGS.ADMINISTRATOR]);
+    if (commands.includes(Commands.CLEAR)) this._enableCommand(ClearCommandHandler, [Permissions.FLAGS.ADMINISTRATOR]);
+    if (commands.includes(Commands.PUNCH)) this._enableCommand(PunchCommandHandler, []);
+    if (commands.includes(Commands.KISS)) this._enableCommand(KissCommandHandler, []);
+    if (commands.includes(Commands.SLAP)) this._enableCommand(SlapCommandHandler, []);
+    if (commands.includes(Commands.IMAGE)) this._enableCommand(ImageCommandHandler, []);
 
   }
 
@@ -107,8 +109,8 @@ class MessageEventHandler extends EventHandler {
     }
   }
 
-  _enableCommand = (command: Commands, args: Array<string>, allowedPerms: Array<number>, type: CommandType, handler: any) => {
-    this._commands.push(new Command(command.toString(), args, allowedPerms, type, this.onMessage, handler));
+  _enableCommand = (handler: CommandHandler<any> | any, allowedPerms: Array<number>) => {
+    this._commands.push(new Command(handler, allowedPerms, this.onMessage));
   }
 
   _destroyCommand = (command: string) => {

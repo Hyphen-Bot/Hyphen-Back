@@ -17,23 +17,32 @@
 
 import { Message, Permissions } from 'discord.js';
 import { CommandType } from './CommandType';
+import CommandHandler from './CommandHandler';
 
-class Command {
+class CommandDispatcher {
 
-  _command: string;
-  _args: Array<string>;
-  _allowedPermissionFlags: Array<number>;
-  _type: CommandType;
-  _onMessage: (name: string, listener: (message: Message) => void) => void;
-  _callback: any;
+  private _commandHandler: CommandHandler<any>;
+  private _allowedPermissionFlags: Array<number>;
+  private _onMessage: (name: string, listener: (message: Message) => void) => void;
 
-  constructor(command: string, args: Array<string>, allowedPermissionFlags: Array<number>, type: CommandType, onMessage: (name: string, listener: (message: Message) => void) => void, callback: any) {
-    this._command = command;
-    this._args = args;
+  // command metadata
+  private _command: string;
+  private _args: Array<string>;
+  private _type: CommandType;
+  private _description: string;
+  private _usage: string;
+
+  constructor(commandHandler: CommandHandler<any>, allowedPermissionFlags: Array<number>, onMessage: (name: string, listener: (message: Message) => void) => void) {
+    // @ts-ignore
+    this._commandHandler = new commandHandler();
     this._allowedPermissionFlags = allowedPermissionFlags;
-    this._type = type;
     this._onMessage = onMessage;
-    this._callback = callback;
+
+    this._command = this._commandHandler.metadata.command;
+    this._args = this._commandHandler.metadata.arguments ? this._commandHandler.metadata.arguments : [];
+    this._type = this._commandHandler.metadata.type;
+    this._description = this._commandHandler.metadata.description;
+    this._usage = this._commandHandler.metadata.usage;
 
     // start handler
     this._handler();
@@ -75,14 +84,14 @@ class Command {
 
           // return with arguments
           if (!isUserAllowed) return message.channel.send(`Missing permissions ! Allowed: ${this._allowedPermissionFlags.length <= 0 ? "ALL" : this._allowedPermissionFlags.map(flag => permissionNames[permissionValues.indexOf(flag)]).join(", ")}`);
-          new this._callback(message, { args, mentions: message.mentions.members.array() }).handle();
+          this._commandHandler.handle(message, { args, mentions: message.mentions.members.array() });
         }
       } else {
         if (message.content === command) {
 
           // return without arguments
           if (!isUserAllowed) return message.channel.send(`Missing permissions ! Allowed: ${this._allowedPermissionFlags.length <= 0 ? "ALL" : this._allowedPermissionFlags.map(flag => permissionNames[permissionValues.indexOf(flag)]).join(", ")}`);
-          new this._callback(message, {}).handle();
+          this._commandHandler.handle(message, {});
         }
       }
     });
@@ -103,6 +112,14 @@ class Command {
   get type(): CommandType {
     return this._type;
   }
+
+  get description(): string {
+    return this._description;
+  }
+
+  get usage(): string {
+    return this._usage;
+  }
 }
 
-export default Command;
+export default CommandDispatcher;

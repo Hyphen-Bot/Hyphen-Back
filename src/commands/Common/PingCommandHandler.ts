@@ -18,11 +18,21 @@
 import { Message } from 'discord.js';
 import * as moment from "moment";
 import CommandHandler from '../CommandHandler';
+import { CommandType } from '../CommandType';
+import { Commands } from './../Commands';
 
-class PingCommandHandler extends CommandHandler {
-  handler = async () => {
-    const message: Message = <Message>await this.send(`Calculating...`);
-    await message.edit(Math.abs(moment(message.createdTimestamp).milliseconds() - moment(this._message.createdTimestamp).milliseconds()) + " ms");
+class PingCommandHandler extends CommandHandler<PingCommandHandler> {
+
+  constructor() {
+    super({
+      command: Commands.PING,
+      type: CommandType.COMMON
+    });
+  }
+
+  handler = async (message: Message, payload: any) => {
+    const msg: Message = <Message>await message.channel.send(`Calculating...`);
+    await msg.edit(Math.abs(moment(msg.createdTimestamp).milliseconds() - moment(message.createdTimestamp).milliseconds()) + " ms");
   }
 }
 

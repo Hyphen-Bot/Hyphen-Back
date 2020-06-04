@@ -19,28 +19,34 @@ import { MessageEmbed, Message } from 'discord.js';
 import { container } from 'tsyringe';
 import CommandHandler from '../CommandHandler';
 import { GuildService } from '../../db';
+import { CommandType } from '../CommandType';
+import { Commands } from '../Commands';
 
-class UnmuteCommandHandler extends CommandHandler {
+class UnmuteCommandHandler extends CommandHandler<UnmuteCommandHandler> {
 
   _guildService: GuildService;
 
-  constructor(message: Message, payload: any) {
-    super(message, payload);
+  constructor() {
+    super({
+      command: Commands.UNMUTE,
+      type: CommandType.MODERATION,
+      arguments: ["member"]
+    });
 
     this._guildService = container.resolve(GuildService);
   }
 
-  handler = async () => {
-    if (!this._payload.mentions[0].guild) throw new Error("Please mention a valid user !");
+  handler = async (message: Message, payload: any) => {
+    if (!payload.mentions[0].guild) throw new Error("Please mention a valid user !");
 
-    const mutedRoleId = (await this._guildService.getGuild(this.guild.id)).mutedRoleId;
-    await this.guild.member(this._payload.mentions[0].user.id).roles.remove(mutedRoleId);
+    const mutedRoleId = (await this._guildService.getGuild(message.guild.id)).mutedRoleId;
+    await message.guild.member(payload.mentions[0].user.id).roles.remove(mutedRoleId);
 
     const embed = new MessageEmbed()
-      .setAuthor(`Successfully unmuted ${this._payload.mentions[0].user.tag}`, this._payload.mentions[0].user.avatarURL)
-      .setFooter(`Unmuted by ${this.user.tag}`)
+      .setAuthor(`Successfully unmuted ${payload.mentions[0].user.tag}`, payload.mentions[0].user.avatarURL)
+      .setFooter(`Unmuted by ${message.author.tag}`)
     
-    await this.sendData(embed);
+    await message.channel.send(embed);
   }
 }
 

@@ -17,12 +17,23 @@
 
 import { Message } from 'discord.js';
 import CommandHandler from '../CommandHandler';
+import { CommandType } from '../CommandType';
+import { Commands } from '../Commands';
 
-class ClearCommandHandler extends CommandHandler {
-  handler = async () => {
-    const deletedMessage = await this._message.channel.bulkDelete(this._payload.args.amount);
-    const message: Message = <Message>await this.send(`Successfully deleted ${deletedMessage.size} messages !`);
-    message.delete({ timeout: 5000 });
+class ClearCommandHandler extends CommandHandler<ClearCommandHandler> {
+
+  constructor() {
+    super({
+      command: Commands.CLEAR,
+      type: CommandType.MODERATION,
+      arguments: ["amount"]
+    });
+  }
+
+  handler = async (message: Message, payload: any) => {
+    const deletedMessage = await message.channel.bulkDelete(payload.args.amount);
+    const msg: Message = <Message>await message.channel.send(`Successfully deleted ${deletedMessage.size} messages !`);
+    msg.delete({ timeout: 5000 });
   }
 }
 

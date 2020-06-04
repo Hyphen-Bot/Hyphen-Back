@@ -21,30 +21,36 @@ import * as moment from 'moment';
 import CommandHandler from '../CommandHandler';
 import { WarnService } from '../../db';
 import Warn from '../../db/entity/Warn';
+import { CommandType } from '../CommandType';
+import { Commands } from '../Commands';
 
-class WarnsCommandHandler extends CommandHandler {
+class WarnsCommandHandler extends CommandHandler<WarnsCommandHandler> {
 
   _warnService: WarnService;
 
-  constructor(message: Message, payload: any) {
-    super(message, payload);
+  constructor() {
+    super({
+      command: Commands.WARNS,
+      type: CommandType.MODERATION,
+      arguments: ["member"]
+    });
 
     this._warnService = container.resolve(WarnService);
   }
 
-  handler = async () => {
-    if (!this._payload.mentions[0].guild) throw new Error("Please mention a valid user !");
+  handler = async (message: Message, payload: any) => {
+    if (!payload.mentions[0].guild) throw new Error("Please mention a valid user !");
 
-    const warns: Warn[] = await this._warnService.getUserWarnsByGuild(this._payload.mentions[0].user.id, this.guild.id);
+    const warns: Warn[] = await this._warnService.getUserWarnsByGuild(payload.mentions[0].user.id, message.guild.id);
 
     const embed = new MessageEmbed()
-      .setAuthor(`${this._payload.mentions[0].user.tag}'s warns`, this._payload.mentions[0].user.avatarURL)
+      .setAuthor(`${payload.mentions[0].user.tag}'s warns`, payload.mentions[0].user.avatarURL)
       .setColor("#f8cd65")
       .setThumbnail("https://cdn.discordapp.com/attachments/717011525105090661/717082034169970688/289673858e06dfa2e0e3a7ee610c3a30.png")
-      .setFooter(`Requested by ${this.user.tag}`, this.user.displayAvatarURL());
+      .setFooter(`Requested by ${message.author.tag}`, message.author.displayAvatarURL());
 
     for (const warn of warns.sort((a, b) => moment(b.createdAt).isSameOrBefore(moment(a.createdAt)) ? -1 : 1)) {
-      const byMember = await this._message.guild.members.resolve(warn.byMember.discordUserId);
+      const byMember = await message.guild.members.resolve(warn.byMember.discordUserId);
       embed.addField(moment(warn.createdAt).fromNow(), `${warn.reason}\n\`by ${byMember.user.tag}\``);
     }
 
@@ -52,7 +58,7 @@ class WarnsCommandHandler extends CommandHandler {
       embed.setDescription("This user does not have any warns!");
     }
     
-    await this.sendData(embed);
+    await message.channel.send(embed);
   }
 }
 

@@ -15,31 +15,38 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Message, User, MessageAttachment, MessageOptions, MessageEmbed, Guild } from 'discord.js';
+import { Message } from 'discord.js';
+import { CommandType } from './CommandType';
 import { Logger } from '../utils';
+import { Commands } from './Commands';
 
-class CommandHandler {
+class CommandMetadata {
+  public command: Commands;
+  public description?: string;
+  public type: CommandType;
+  public usage?: string;
+  public arguments?: Array<string> = [];
 
-  _message: Message;
-  _payload: any;
+  public constructor(init?:Partial<CommandMetadata>) {
+      Object.assign(this, init);
+  }
+}
 
-  constructor(message: Message, payload: any) {
-    this._message = message;
-    this._payload = payload;
+class CommandHandler<T> {
+
+  _metadata: CommandMetadata;
+
+  constructor(metadata: CommandMetadata) {
+    this._metadata = metadata;
   }
 
   /**
    * Default handler wrapper, responsible for error catching
    */
-  handle = async () => {
+  handle = async (message: Message, payload: any, ) => {
     try {
-      await this.handler();
+      await this.handler(message, payload);
     } catch (e) {
-      const embed = new MessageEmbed()
-        .setColor('#cc4137')
-        .setTitle('An error occurred !')
-        .setDescription(e.message)
-      this.sendData(embed);
       Logger.error(e);
     }
   }
@@ -47,36 +54,15 @@ class CommandHandler {
   /**
    * Public handler, this is the main command runtime
    */
-  handler = async () => {
+  handler = async (message: Message, payload: any, ) => {
     // nothing
   }
-
+  
   /**
-   * Send a message with optional options in the current channel
+   * Get the command metadata
    */
-  send = async (message: string, options?: MessageOptions | MessageEmbed | MessageAttachment): Promise<Message | Message[]> => {
-    return this._message.channel.send(message, options);
-  }
-
-  /**
-   * Send a data message (Embed, Attachment etc...) to the current channel
-   */
-  sendData = async (options: MessageOptions | MessageEmbed | MessageAttachment) => {
-    await this._message.channel.send(options);
-  }
-
-  /**
-   * Get the current user (who triggered the command)
-   */
-  get user(): User {
-    return this._message.author;
-  }
-
-  /**
-   * Get the current guild
-   */
-  get guild(): Guild {
-    return this._message.guild;
+  get metadata(): CommandMetadata {
+    return this._metadata;
   }
 }
 

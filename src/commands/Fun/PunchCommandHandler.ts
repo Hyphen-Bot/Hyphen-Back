@@ -15,24 +15,35 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, Message } from 'discord.js';
 import fetch from "node-fetch";
 import CommandHandler from '../CommandHandler';
 import { Color } from '../../utils';
+import { CommandType } from '../CommandType';
+import { Commands } from '../Commands';
 
-class PunchCommandHandler extends CommandHandler {
-  handler = async () => {
+class PunchCommandHandler extends CommandHandler<PunchCommandHandler> {
+
+  constructor() {
+    super({
+      command: Commands.PUNCH,
+      type: CommandType.FUN,
+      arguments: ["member"]
+    });
+  }
+
+  handler = async (message: Message, payload: any) => {
     const response = await fetch('https://neko-love.xyz/api/v1/punch');
     const json = await response.json();
 
-    const target = this._payload.mentions ? this._payload.mentions[0].user.username : this.user.username;
+    const target = payload.mentions ? payload.mentions[0].user.username : message.author.username;
     
     const embed = new MessageEmbed()
-      .setAuthor(`${this.user.username} punched ${target} 🤜`, this.user.displayAvatarURL())
+      .setAuthor(`${message.author.username} punched ${target} 🤜`, message.author.displayAvatarURL())
       .setColor(Color.random())
       .setImage(json.url);
 
-    await this.sendData(embed);
+    await message.channel.send(embed);
   }
 }
 

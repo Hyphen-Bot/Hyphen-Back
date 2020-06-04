@@ -15,19 +15,30 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { MessageAttachment } from 'discord.js';
+import { MessageAttachment, Message } from 'discord.js';
 import * as jimp from 'jimp';
 import CommandHandler from '../CommandHandler';
 import { Color } from '../../utils';
+import { Commands } from '../Commands';
+import { CommandType } from '../CommandType';
 
-class ImageCommandHandler extends CommandHandler {
-  handler = async () => {
-    let { effect, amount, imageUrl }: any = this._payload.args ? this._payload.args : { effect: {} };
+class ImageCommandHandler extends CommandHandler<ImageCommandHandler> {
+
+  constructor() {
+    super({
+      command: Commands.IMAGE,
+      type: CommandType.TOOLS,
+      arguments: ["effect", "amount", "imageUrl"]
+    });
+  }
+
+  handler = async (message: Message, payload: any) => {
+    let { effect, amount, imageUrl }: any = payload.args ? payload.args : { effect: {} };
     if (!imageUrl) {
-      if (this._message.attachments.size > 0) {
-        imageUrl = this._message.attachments.array()[0].url;
+      if (message.attachments.size > 0) {
+        imageUrl = message.attachments.array()[0].url;
       } else {
-        imageUrl = this.user.displayAvatarURL({ format: "png", size: 4096 });
+        imageUrl = message.author.displayAvatarURL({ format: "png", size: 4096 });
       }
     }
 
@@ -102,7 +113,7 @@ class ImageCommandHandler extends CommandHandler {
       break;
     }
 
-    await this.sendData(new MessageAttachment(await image.getBufferAsync("image/png")));
+    await message.channel.send(new MessageAttachment(await image.getBufferAsync("image/png")));
   }
 }
 

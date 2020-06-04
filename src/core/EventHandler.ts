@@ -17,7 +17,7 @@
 
 import { Client, Guild, Message } from 'discord.js';
 import { EventEmitter } from 'events';
-import Command from '../commands/Command';
+import Command from '../commands/CommandDispatcher';
 
 class EventHandler {
   

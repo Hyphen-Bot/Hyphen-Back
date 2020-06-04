@@ -15,34 +15,39 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Message, MessageAttachment } from 'discord.js';
+import { Message, MessageAttachment, User } from 'discord.js';
 import { container } from 'tsyringe';
 import { createCanvas, loadImage } from "canvas";
 import CommandHandler from '../CommandHandler';
 import { MemberService } from '../../db';
+import { CommandType } from '../CommandType';
+import { Commands } from '../Commands';
 
-class RankCommandHandler extends CommandHandler {
+class RankCommandHandler extends CommandHandler<RankCommandHandler> {
 
   _memberService: MemberService;
 
-  constructor(message: Message, payload: any) {
-    super(message, payload);
+  constructor() {
+    super({
+      command: Commands.RANK,
+      type: CommandType.LEVEL
+    });
 
     this._memberService = container.resolve(MemberService);
   }
 
-  handler = async () => {
-    const xpAmount = await this._memberService.getXpAmount(this.user.id, this.guild.id);
-    const image = await this._generateImage(xpAmount);
-    await this.sendData(new MessageAttachment(image));
+  handler = async (message: Message, payload: any) => {
+    const xpAmount = await this._memberService.getXpAmount(message.author.id, message.guild.id);
+    const image = await this._generateImage(xpAmount, message.author);
+    await message.channel.send(new MessageAttachment(image));
   }
 
-  _generateImage = async (xpAmount) => {
+  _generateImage = async (xpAmount, user: User) => {
     const canvas = createCanvas(700, 250)
     const ctx = canvas.getContext('2d')
 
     // background image
-    const background = await loadImage(this.user.displayAvatarURL({format: "png" }));
+    const background = await loadImage(user.displayAvatarURL({format: "png" }));
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
     // filter
@@ -60,7 +65,7 @@ class RankCommandHandler extends CommandHandler {
     // Add text
     ctx.font = '30px Impact';
     ctx.fillStyle = '#FFF';
-    ctx.fillText(this.user.tag, canvas.width / 2.5, canvas.height / 3.5);
+    ctx.fillText(user.tag, canvas.width / 2.5, canvas.height / 3.5);
 
     // Add text
     ctx.font = '60px Impact';
@@ -74,7 +79,7 @@ class RankCommandHandler extends CommandHandler {
     ctx.clip();
       
     // add user avatar
-    const avatar = await loadImage(this.user.displayAvatarURL({ format: "png" }));
+    const avatar = await loadImage(user.displayAvatarURL({ format: "png" }));
     ctx.drawImage(avatar, 50, 50, 150, 150);
 
     return canvas.toBuffer();
