@@ -39,12 +39,11 @@ class WarnsCommandHandler extends CommandHandler<WarnsCommandHandler> {
   }
 
   handler = async (message: Message, payload: any) => {
-    if (!payload.mentions[0].guild) throw new Error("Please mention a valid user !");
-
-    const warns: Warn[] = await this._warnService.getUserWarnsByGuild(payload.mentions[0].user.id, message.guild.id);
+    const user = (payload.mentions && payload.mentions[0].guild) ? payload.mentions[0].user : message.author;
+    const warns: Warn[] = await this._warnService.getUserWarnsByGuild(user.id, message.guild.id);
 
     const embed = new MessageEmbed()
-      .setAuthor(`${payload.mentions[0].user.tag}'s warns`, payload.mentions[0].user.avatarURL)
+      .setAuthor(`${user.tag}'s warns`, user.avatarURL)
       .setColor("#f8cd65")
       .setThumbnail("https://cdn.discordapp.com/attachments/717011525105090661/717082034169970688/289673858e06dfa2e0e3a7ee610c3a30.png")
       .setFooter(`Requested by ${message.author.tag}`, message.author.displayAvatarURL());
