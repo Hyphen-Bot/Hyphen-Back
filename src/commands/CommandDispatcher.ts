@@ -61,7 +61,9 @@ class CommandDispatcher {
       // is user allowed?
       if (this._allowedPermissionFlags.length > 0) {
         this._allowedPermissionFlags.forEach(allowedPermissionFlag => {
-          if (message.member.permissions.has(allowedPermissionFlag)) isUserAllowed = true;
+          if (message.member) {
+            if (message.member.permissions.has(allowedPermissionFlag)) isUserAllowed = true;
+          }
         });
       } else {
         isUserAllowed = true;
