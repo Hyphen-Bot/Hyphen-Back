@@ -16,27 +16,26 @@
  */
 
 import Route from "./Route";
-import * as C from './../../commands';
+import * as F from '../../features';
 
-class CommandsRoute extends Route {
+class FeaturesRoute extends Route {
 
   setup() {
       this._router.get('/', async (req, res) => {
           try {
-            const commandKeys = Object.values(C.Commands); 
-            const commands = [];
-            Object.keys(C).forEach(c => {
-              if (c.match(/.+CommandHandler/g)) {
-                const cmd: C.CommandHandler<any> = new C[c]();
-                if (commandKeys.includes(cmd.metadata.command)) {
-                  commands.push({
-                    ...cmd.metadata,
-                    type: Object.values(C.CommandType)[cmd.metadata.type]
+            const featureKeys = Object.values(F.Features); 
+            const features = [];
+            Object.keys(F).forEach(f => {
+              if (f.match(/.+FeatureHandler/g)) {
+                const feat: F.FeatureHandler<any> = new F[f]();
+                if (featureKeys.includes(feat.metadata.feature)) {
+                  features.push({
+                    ...feat.metadata,
                   });
                 }
               }
             });
-            return res.json(commands);
+            return res.json(features);
           } catch (e) {
             return res.send(e.message);
           }
@@ -46,4 +45,4 @@ class CommandsRoute extends Route {
   }
 }
 
-export default CommandsRoute;
+export default FeaturesRoute;

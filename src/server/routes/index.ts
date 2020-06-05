@@ -18,9 +18,11 @@
 import GuildsRoute from "./GuildsRoute";
 import CommandsRoute from "./CommandsRoute";
 import UsersRoute from "./UsersRoute";
+import FeaturesRoute from "./FeaturesRoute";
 
 export {
   GuildsRoute,
   CommandsRoute,
-  UsersRoute
+  UsersRoute,
+  FeaturesRoute
 }

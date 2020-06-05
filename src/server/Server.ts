@@ -21,7 +21,7 @@ import * as express from "express";
 import * as bearerToken from "express-bearer-token";
 import * as bodyParser from "body-parser";
 import * as cors from "cors";
-import { GuildsRoute, CommandsRoute, UsersRoute } from './routes';
+import { GuildsRoute, CommandsRoute, UsersRoute, FeaturesRoute } from './routes';
 
 class Server {
 
@@ -53,15 +53,13 @@ class Server {
       this._app.use(bearerToken());
       this._app.use(cors());
       this._app.use(bodyParser.json());
-      // this._app.use(express.static(path.join(__dirname, '/../../../build')));
   }
 
   registerRoutes() {
       this._app.use('/guilds', new GuildsRoute(this._client, this._apiEventEmitter).setup());
       this._app.use('/commands', new CommandsRoute(this._client, this._apiEventEmitter).setup());
       this._app.use('/users', new UsersRoute(this._client, this._apiEventEmitter).setup());
-
-      // this._app.get('*', (req, res) => res.sendFile(path.join(`${__dirname}/../../../build/index.html`)));
+      this._app.use('/features', new FeaturesRoute(this._client, this._apiEventEmitter).setup());
   }
 } 
 
