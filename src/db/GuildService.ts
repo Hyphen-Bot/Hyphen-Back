@@ -18,6 +18,7 @@
 import { Connection, Repository } from 'typeorm';
 import { GuildEntity } from './entity';
 import { Commands } from '../commands';
+import { Features } from '../features';
 
 class GuildService {
 
@@ -79,6 +80,39 @@ class GuildService {
         if (command !== cmd) tmp.push(cmd);
       });
       guild.enabledCommands = JSON.stringify(tmp);
+
+      return this._guildRepository.save(guild);
+    }
+
+    return guild;
+  }
+
+  async enableFeature(guildId: string, feature: string): Promise<GuildEntity> {
+    if (!Object.keys(Features).map(cmd => cmd.toLowerCase()).includes(feature)) throw new Error("Feature does not exist !");
+
+    const guild = await this.getGuild(guildId);
+    const enabledFeatures = JSON.parse(guild.enabledFeatures);
+    if (!enabledFeatures.includes(feature)) {
+      enabledFeatures.push(feature);
+      guild.enabledFeatures = JSON.stringify(enabledFeatures);
+
+      return this._guildRepository.save(guild);
+    }
+
+    return guild;
+  }
+
+  async disableFeature(guildId: string, feature: string): Promise<GuildEntity> {
+    if (!Object.keys(Features).map(cmd => cmd.toLowerCase()).includes(feature)) throw new Error("Feature does not exist !");
+
+    const guild = await this.getGuild(guildId);
+    const enabledFeatures = JSON.parse(guild.enabledFeatures);
+    if (enabledFeatures.includes(feature)) {
+      const tmp = [];
+      enabledFeatures.forEach(feat => {
+        if (feature !== feat) tmp.push(feat);
+      });
+      guild.enabledFeatures = JSON.stringify(tmp);
 
       return this._guildRepository.save(guild);
     }

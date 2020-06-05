@@ -83,9 +83,9 @@ class GuildsRoute extends Route {
       });
 
       /**
-       * /{guild.id}/{command}/{action}
+       * /{guild.id}/commands/{command}/{action}
        */
-      this._router.put('/:guildId/:command/:action', async (req, res) => {
+      this._router.put('/:guildId/commands/:command/:action', async (req, res) => {
         try {          
           const { guildId, command, action }: any = req.params;
 
@@ -98,6 +98,29 @@ class GuildsRoute extends Route {
           }
 
           this._apiEventEmitter.emit("reloadCommands", { guildId });
+          
+          return res.json({ success: true });
+        } catch (e) {
+          return res.send(e.message);
+        }
+      });
+
+      /**
+       * /{guild.id}/features/{feature}/{action}
+       */
+      this._router.put('/:guildId/features/:feature/:action', async (req, res) => {
+        try {          
+          const { guildId, feature, action }: any = req.params;
+
+          if (action !== "enable" && action !== "disable") throw new Error(JSON.stringify({ error: true, message: "Action can only be enable or disable !" }));
+
+          if (action === "enable") {
+            await this._guildService.enableFeature(guildId, feature);
+          } else if (action === "disable") {
+            await this._guildService.disableFeature(guildId, feature);
+          }
+
+          this._apiEventEmitter.emit("reloadFeatures", { guildId });
           
           return res.json({ success: true });
         } catch (e) {
@@ -124,13 +147,28 @@ class GuildsRoute extends Route {
        /**
        * /{guild.id}/enabledCommands
        */
-      this._router.get('/:guildId/enabledCommands', async (req, res) => {
+      this._router.get('/:guildId/commands', async (req, res) => {
         try {          
           const { guildId }: any = req.params;
 
           const guild = await this._guildService.getGuild(guildId)
           
           return res.json(JSON.parse(guild.enabledCommands));
+        } catch (e) {
+          return res.send(e.message);
+        }
+      });
+
+      /**
+       * /{guild.id}/enabledFeatures
+       */
+      this._router.get('/:guildId/features', async (req, res) => {
+        try {          
+          const { guildId }: any = req.params;
+
+          const guild = await this._guildService.getGuild(guildId)
+          
+          return res.json(JSON.parse(guild.enabledFeatures));
         } catch (e) {
           return res.send(e.message);
         }
