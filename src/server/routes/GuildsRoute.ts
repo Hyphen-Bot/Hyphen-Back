@@ -21,6 +21,7 @@ import { container } from 'tsyringe';
 import Route from "./Route";
 import DiscordApiClient from '../DiscordApiClient';
 import { MemberService, GuildService } from '../../db';
+import { Logger } from '../../utils';
 
 class GuildsRoute extends Route {
 
@@ -64,19 +65,23 @@ class GuildsRoute extends Route {
        * GET /{guild.id}/members
        */
       this._router.get('/:guildId/members', async (req, res) => {
-        try {          
-          let members: Array<any> = await Promise.all((await this._memberService.getAllGuildMembers(req.params.guildId.toString())).map(async member => {
-            const user = await this._client.users.fetch(member.discordUserId);
-            return {
-              username: user.tag,
-              avatarUrl: user.displayAvatarURL({ format: "png" }),
-              xpAmount: member.xpAmount,
+        try {      
+          const guildMembers = [];
+          const members = await this._memberService.getAllGuildMembers(req.params.guildId.toString());
+          members.forEach(async member => {
+            const user = this._client.users.resolve(member.discordUserId);
+            if (user && !user.bot) {
+              guildMembers.push({
+                username: user.tag,
+                avatarUrl: user.displayAvatarURL({ format: "png" }),
+                xpAmount: member.xpAmount,
+              });
             }
-          }));
+          });
 
-          members.sort((a, b) => b.xpAmount > a.xpAmount ? 1 : -1);
+          guildMembers.sort((a, b) => b.xpAmount > a.xpAmount ? 1 : -1);
           
-          return res.json(members);
+          return res.json(guildMembers);
         } catch (e) {
           return res.send(e.message);
         }
