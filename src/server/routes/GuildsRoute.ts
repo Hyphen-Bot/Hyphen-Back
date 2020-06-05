@@ -15,7 +15,7 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Permissions, Client } from 'discord.js';
+import { Permissions, Client, Guild } from 'discord.js';
 import { EventEmitter } from 'events';
 import { container } from 'tsyringe';
 import Route from "./Route";
@@ -169,6 +169,43 @@ class GuildsRoute extends Route {
           const guild = await this._guildService.getGuild(guildId)
           
           return res.json(JSON.parse(guild.enabledFeatures));
+        } catch (e) {
+          return res.send(e.message);
+        }
+      });
+
+      /**
+       * /{guild.id}/enabledFeatures
+       */
+      this._router.get('/:guildId/channels', async (req, res) => {
+        try {          
+          const { guildId }: any = req.params;
+
+          const guild: Guild = this._client.guilds.resolve(guildId);
+
+          const channels = {};
+          guild.channels.cache.array().forEach(channel => {
+            const categoryName = channel.parent ? channel.parent.name : "Others";
+            if (channel.type === "category") return;
+            if (channels[categoryName]) {
+              channels[categoryName] = [
+                ...channels[categoryName],
+                {
+                  id: channel.id,
+                  name: channel.name
+                }
+              ];
+            } else {
+              channels[categoryName] = [
+                {
+                  id: channel.id,
+                  name: channel.name
+                }
+              ];
+            }
+          });
+          
+          return res.json(channels);
         } catch (e) {
           return res.send(e.message);
         }
