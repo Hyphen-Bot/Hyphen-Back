@@ -50,9 +50,9 @@ class MuteCommandHandler extends CommandHandler<TempMuteCommandHandler> {
     }, timeoutMs);
 
     const embed = new MessageEmbed()
-      .setAuthor(`Successfully muted ${payload.mentions[0].user.tag} for ${payload.args.timeoutMn} minute(s) !`, payload.mentions[0].user.avatarURL)
+      .setAuthor(`🔇 Successfully muted ${payload.mentions[0].user.tag} for ${payload.args.timeoutMn} minute(s) !`, payload.mentions[0].user.displayAvatarURL({ dynamic: true }))
       .setFooter(`Muted by ${message.author.tag}`)
-      .addField("Reason", reason);
+      .addField("📄 __**REASON**__", reason);
     
     await message.channel.send(embed);
   }

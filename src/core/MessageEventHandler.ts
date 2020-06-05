@@ -123,18 +123,19 @@ class MessageEventHandler extends EventHandler {
     await this._memberService.addMember(message.author.id, this._guild.id, "en");
     await this._memberService.increaseXpAmount(message.author.id, this._guild.id);
 
-    if (message.content.startsWith(process.env.BOT_PREFIX + "commands")) {
+    if (message.content.startsWith(process.env.BOT_PREFIX + "commands") || message.content.startsWith(process.env.BOT_PREFIX + "help")) {
       return this._handleGenerateAndSendHelp(message, message.content.split(" ")[1]);
     }
   }
 
   _handleGenerateAndSendHelp = async (message: Message, includeDetails?: any) => {
     const embed = new MessageEmbed()
-      .setTitle("Guild Commands")
+      .setTitle("📗 Guild Enabled Commands")
       .setDescription(`This is the list of all the commands that are enabled on this guild. Please see the dashboard to have a list of all the available commands and to manage them !`)
-      .setColor("#3467eb")
-      .setThumbnail("https://cdn.discordapp.com/attachments/717308535020584966/717308958599151666/--3.png")
-      .setFooter(`Requested by ${message.author.tag}`, message.author.displayAvatarURL());
+      .setColor("#dbebff")
+      .setThumbnail(this._guild.iconURL({ dynamic: true }))
+      .setFooter(`Requested by ${message.author.tag}`, message.author.displayAvatarURL())
+      .setTimestamp();
 
     const permissionNames = Object.keys(Permissions.FLAGS);
     const permissionValues = Object.values(Permissions.FLAGS);
@@ -152,7 +153,7 @@ class MessageEventHandler extends EventHandler {
 
       if (commands) {
         embed.addField(
-          key[0] + key.substr(1, key.length).toLowerCase(), 
+          `__**📌 ${key}**__`, 
           commands
         );
       }

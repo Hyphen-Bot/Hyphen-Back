@@ -15,7 +15,7 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { MessageEmbed, Message } from 'discord.js';
+import { MessageEmbed, Message, User } from 'discord.js';
 import { container } from 'tsyringe';
 import * as moment from 'moment';
 import CommandHandler from '../CommandHandler';
@@ -40,18 +40,18 @@ class WarnsCommandHandler extends CommandHandler<WarnsCommandHandler> {
   }
 
   handler = async (message: Message, payload: any) => {
-    const user = (payload.mentions && payload.mentions[0].guild) ? payload.mentions[0].user : message.author;
+    const user: User = (payload.mentions && payload.mentions[0].guild) ? payload.mentions[0].user : message.author;
     const warns: Warn[] = await this._warnService.getUserWarnsByGuild(user.id, message.guild.id);
 
     const embed = new MessageEmbed()
-      .setAuthor(`${user.tag}'s warns`, user.avatarURL)
+      .setAuthor(`⚠️ ${user.tag}'s warns`, user.displayAvatarURL({ dynamic: true }))
       .setColor("#f8cd65")
-      .setThumbnail("https://cdn.discordapp.com/attachments/717011525105090661/717082034169970688/289673858e06dfa2e0e3a7ee610c3a30.png")
+      .setThumbnail(user.displayAvatarURL({ dynamic: true }))
       .setFooter(`Requested by ${message.author.tag}`, message.author.displayAvatarURL());
 
     for (const warn of warns.sort((a, b) => moment(b.createdAt).isSameOrBefore(moment(a.createdAt)) ? -1 : 1)) {
       const byMember = await message.guild.members.resolve(warn.byMember.discordUserId);
-      embed.addField(moment(warn.createdAt).fromNow(), `${warn.reason}\n\`by ${byMember.user.tag}\``);
+      embed.addField(`📌 __**${moment(warn.createdAt).fromNow()}**__`, `${warn.reason}\n\`by ${byMember.user.tag}\``);
     }
 
     if (warns.length <= 0) {

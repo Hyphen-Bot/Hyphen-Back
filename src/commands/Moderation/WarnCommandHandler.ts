@@ -52,11 +52,10 @@ class WarnCommandHandler extends CommandHandler<WarnCommandHandler> {
     await this._warnService.warnMember(payload.mentions[0].user.id, message.author.id, message.guild.id, reason);
 
     const embed = new MessageEmbed()
-      .setAuthor(`Successfully warned ${payload.mentions[0].user.tag}`, payload.mentions[0].user.avatarURL)
+      .setAuthor(`⚠️ Successfully warned ${payload.mentions[0].user.tag}`, payload.mentions[0].user.displayAvatarURL({ dynamic: true }))
       .setColor("#f8cd65")
-      .setThumbnail("https://cdn.discordapp.com/attachments/717011525105090661/717082034169970688/289673858e06dfa2e0e3a7ee610c3a30.png")
       .setFooter(`Warned by ${message.author.tag}`)
-      .addField("Reason", reason);
+      .addField("📄 __**REASON**__", reason);
     
     await message.channel.send(embed);
   }

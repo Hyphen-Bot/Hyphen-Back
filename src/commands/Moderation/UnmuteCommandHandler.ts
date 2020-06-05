@@ -44,7 +44,7 @@ class UnmuteCommandHandler extends CommandHandler<UnmuteCommandHandler> {
     await message.guild.member(payload.mentions[0].user.id).roles.remove(mutedRoleId);
 
     const embed = new MessageEmbed()
-      .setAuthor(`Successfully unmuted ${payload.mentions[0].user.tag}`, payload.mentions[0].user.avatarURL)
+      .setAuthor(`📢 Successfully unmuted ${payload.mentions[0].user.tag}`, payload.mentions[0].user.displayAvatarURL({ dynamic: true }))
       .setFooter(`Unmuted by ${message.author.tag}`)
     
     await message.channel.send(embed);

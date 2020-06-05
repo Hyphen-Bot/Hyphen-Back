@@ -16,6 +16,7 @@
  */
 
 import { Message, MessageEmbed } from 'discord.js';
+import * as moment from "moment";
 import CommandHandler from '../CommandHandler';
 import { CommandType } from '../CommandType';
 import { Commands } from '../Commands';
@@ -41,22 +42,18 @@ class PingCommandHandler extends CommandHandler<PingCommandHandler> {
     const embed = new MessageEmbed();
     embed.setAuthor(user.tag, user.displayAvatarURL());
     embed.setThumbnail(user.displayAvatarURL({ format: "png", dynamic: true, size: 1024 }));
-    embed.setColor(user.presence.member.roles.color.color);
-    embed.addField("User ID", user.id, true);
-    embed.addField("Account Creation", user.createdAt.toLocaleString(), true);
+    embed.setColor(user.presence.member.roles.color ? user.presence.member.roles.color.color : "#dbebff");
+    embed.addField("🆔 __**USER ID**__", user.id, false);
+    embed.addField("📆 __**ACCOUNT CREATION**__", moment(user.createdAt).format("DD/MM/YYYY"), false);
     if (user.locale) {
-      embed.addField("Locale", user.locale, true);
+      embed.addField("🚩 __**LOCALE**__", user.locale, false);
     }
-    embed.addField("Partial", user.partial ? "Yes" : "No", true);
-    embed.addField("Bannable", user.presence.member.bannable ? "Yes" : "No", true);
-    embed.addField("Kickable", user.presence.member.kickable ? "Yes" : "No", true);
-    embed.addField("Manageable", user.presence.member.manageable ? "Yes" : "No", true);
-    embed.addField("Joined At", user.presence.member.joinedAt.toLocaleString(), true);
+    embed.addField("🕑 __**JOINED AT**__", moment(user.presence.member.joinedAt).format("DD/MM/YYYY"), false);
     if (user.presence.member.nickname) {
-      embed.addField("Nickname", user.presence.member.nickname, true);
+      embed.addField("🧑 __**NICKNAME**__", user.presence.member.nickname, false);
     }
-    embed.addField("Premium Since", user.presence.member.premiumSince ? user.presence.member.premiumSince.toLocaleString() : "Not Premium", true);
-    embed.addField("Roles", user.presence.member.roles.cache.map(role => `<@&${role.id}>`).join(", "), true);
+    embed.addField("⚜️ __**PREMIUM SINCE**__", user.presence.member.premiumSince ? moment(user.presence.member.premiumSince).format('DD/MM/YYYY') : "Not Premium", false);
+    embed.addField("💯 __**ROLES**__", user.presence.member.roles.cache.map(role => `<@&${role.id}>`).join(", "), false);
     embed.setFooter(`Requested by ${message.author.tag}`, message.author.displayAvatarURL());
     embed.setTimestamp();
 
