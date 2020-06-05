@@ -186,7 +186,7 @@ class GuildsRoute extends Route {
           const channels = {};
           guild.channels.cache.array().forEach(channel => {
             const categoryName = channel.parent ? channel.parent.name : "Others";
-            if (channel.type === "category") return;
+            if (channel.type === "category" || channel.type === "voice") return;
             if (channels[categoryName]) {
               channels[categoryName] = [
                 ...channels[categoryName],
