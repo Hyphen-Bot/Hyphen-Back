@@ -19,6 +19,7 @@ import { Message } from 'discord.js';
 import { CommandType } from './CommandType';
 import { Logger } from '../utils';
 import { Commands } from './Commands';
+import { CommandException } from '../exceptions';
 
 class CommandMetadata {
   public command: Commands;
@@ -47,7 +48,11 @@ class CommandHandler<T> {
     try {
       await this.handler(message, payload);
     } catch (e) {
-      Logger.error(e);
+      if (e instanceof CommandException) {
+        message.channel.send(e.message);
+      } else {
+        Logger.error(e);
+      }
     }
   }
 

@@ -15,10 +15,11 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Message, GuildMember } from 'discord.js';
+import { Message } from 'discord.js';
 import CommandHandler from '../CommandHandler';
 import { CommandType } from '../CommandType';
 import { Commands } from '../Commands';
+import { CommandException } from '../../exceptions';
 
 class ClearCommandHandler extends CommandHandler<ClearCommandHandler> {
 
@@ -34,6 +35,8 @@ class ClearCommandHandler extends CommandHandler<ClearCommandHandler> {
 
   handler = async (message: Message, payload: any) => {
     await message.delete();
+
+    if (isNaN(payload.args.amount)) throw new CommandException("The amount should be a number !");
 
     let amount = 0;
 
