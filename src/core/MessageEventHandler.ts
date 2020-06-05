@@ -35,7 +35,8 @@ import {
   KissCommandHandler,
   SlapCommandHandler,
   ImageCommandHandler,
-  TempMuteCommandHandler
+  TempMuteCommandHandler,
+  UserInfoCommandHandler
 } from '../commands';
 import { MemberService, GuildService } from '../db';
 import { FeatureHandler, FeatureDispatcher, QuoteFeatureHandler, Features } from '../features';
@@ -81,6 +82,7 @@ class MessageEventHandler extends EventHandler {
     if (commands.includes(Commands.SLAP)) this._enableCommand(SlapCommandHandler, []);
     if (commands.includes(Commands.IMAGE)) this._enableCommand(ImageCommandHandler, []);
     if (commands.includes(Commands.TEMPMUTE)) this._enableCommand(TempMuteCommandHandler, []);
+    if (commands.includes(Commands.USERINFO)) this._enableCommand(UserInfoCommandHandler, []);
 
   }
 

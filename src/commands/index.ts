@@ -31,6 +31,7 @@ import KissCommandHandler from "./Fun/KissCommandHandler";
 import SlapCommandHandler from "./Fun/SlapCommandHandler";
 import ImageCommandHandler from "./Tools/ImageCommandHandler";
 import TempMuteCommandHandler from "./Moderation/TempMuteCommandHandler";
+import UserInfoCommandHandler from "./Common/UserInfoCommandHandler";
 
 export {
   CommandDispatcher,
@@ -48,5 +49,6 @@ export {
   KissCommandHandler,
   SlapCommandHandler,
   ImageCommandHandler,
-  TempMuteCommandHandler
+  TempMuteCommandHandler,
+  UserInfoCommandHandler
 }
