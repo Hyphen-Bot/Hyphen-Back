@@ -30,6 +30,7 @@
     "express": "^4.17.1",
     "express-bearer-token": "^2.4.0",
     "ffmpeg-static": "^4.2.2",
+    "franc": "^5.0.0",
     "http": "^0.0.1-security",
     "jimp": "^0.12.1",
     "leven": "^3.1.0",

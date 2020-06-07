@@ -37,6 +37,7 @@ import MusicCommandHandler from "./Common/MusicCommandHandler";
 import QRCodeCommandHandler from "./Tools/QRCodeCommandHandler";
 import HashCommandHandler from "./Tools/HashCommandHandler";
 import LevenCommandHandler from "./Tools/LevenCommandHandler";
+import LanguageCommandHandler from "./Tools/LanguageCommandHandler";
 
 export {
   CommandDispatcher,
@@ -60,5 +61,6 @@ export {
   MusicCommandHandler,
   QRCodeCommandHandler,
   HashCommandHandler,
-  LevenCommandHandler
+  LevenCommandHandler,
+  LanguageCommandHandler
 }

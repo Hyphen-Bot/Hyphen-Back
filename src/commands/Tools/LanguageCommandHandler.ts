@@ -15,24 +15,26 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum Commands {
-  PING = "ping",
-  RANK = "rank",
-  WARN = "warn",
-  WARNS = "warns",
-  MUTE = "mute",
-  UNMUTE = "unmute",
-  CLEAR = "clear",
-  PUNCH = "punch",
-  KISS = "kiss",
-  SLAP = "slap",
-  IMAGE = "image",
-  TEMPMUTE = "tempmute",
-  USERINFO = "userinfo",
-  COUNTDOWN = "countdown",
-  MUSIC = "music",
-  QRCODE = "qrcode",
-  HASH = "hash",
-  LEVEN = "leven",
-  LANGUAGE = "language"
+import { Message } from 'discord.js';
+import * as franc from "franc";
+import CommandHandler from '../CommandHandler';
+import { CommandType } from '../CommandType';
+import { Commands } from '../Commands';
+
+class PhoneticCommandHandler extends CommandHandler<PhoneticCommandHandler> {
+
+  constructor() {
+    super({
+      command: Commands.LANGUAGE,
+      type: CommandType.TOOLS,
+      arguments: ["text"],
+      description: "Returns the texts language."
+    });
+  }
+
+  handler = async (message: Message, payload: any) => {
+    message.channel.send(`This text is written in ${franc(payload.args.text)} !`);
+  }
 }
+
+export default PhoneticCommandHandler;
