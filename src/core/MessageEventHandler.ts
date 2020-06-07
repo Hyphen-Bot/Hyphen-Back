@@ -39,7 +39,8 @@ import {
   UserInfoCommandHandler,
   CountdownCommandHandler,
   MusicCommandHandler,
-  QRCodeCommandHandler
+  QRCodeCommandHandler,
+  HashCommandHandler
 } from '../commands';
 import { MemberService, GuildService } from '../db';
 import { FeatureHandler, FeatureDispatcher, QuoteFeatureHandler, Features } from '../features';
@@ -89,6 +90,7 @@ class MessageEventHandler extends EventHandler {
     if (commands.includes(Commands.COUNTDOWN)) this._enableCommand(CountdownCommandHandler, []);
     if (commands.includes(Commands.MUSIC)) this._enableCommand(MusicCommandHandler, []);
     if (commands.includes(Commands.QRCODE)) this._enableCommand(QRCodeCommandHandler, []);
+    if (commands.includes(Commands.HASH)) this._enableCommand(HashCommandHandler, []);
 
   }
 
