@@ -30,5 +30,6 @@ export enum Commands {
   TEMPMUTE = "tempmute",
   USERINFO = "userinfo",
   COUNTDOWN = "countdown",
-  MUSIC = "music"
+  MUSIC = "music",
+  QRCODE = "qrcode"
 }

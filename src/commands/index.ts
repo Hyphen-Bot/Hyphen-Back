@@ -34,6 +34,7 @@ import TempMuteCommandHandler from "./Moderation/TempMuteCommandHandler";
 import UserInfoCommandHandler from "./Common/UserInfoCommandHandler";
 import CountdownCommandHandler from "./Tools/CountdownCommandHandler";
 import MusicCommandHandler from "./Common/MusicCommandHandler";
+import QRCodeCommandHandler from "./Tools/QRCodeCommandHandler";
 
 export {
   CommandDispatcher,
@@ -54,5 +55,6 @@ export {
   TempMuteCommandHandler,
   UserInfoCommandHandler,
   CountdownCommandHandler,
-  MusicCommandHandler
+  MusicCommandHandler,
+  QRCodeCommandHandler
 }
