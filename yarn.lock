@@ -1535,6 +1535,11 @@ cors@^2.8.5:
     object-assign "^4"
     vary "^1"
 
+cows@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/cows/-/cows-2.1.0.tgz#305d8bbcdd4575945f164bd1f8d98a192de6470c"
+  integrity sha512-Pj6j6+v2rbnW98KFQoVsia40k54rD5l8pHLarCF5JNYHRZzSCeLNnhpVDDO8EbRWRWHdy5LODb7FIt5j+NhE7A==
+
 cross-spawn@^6.0.0:
   version "6.0.5"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-6.0.5.tgz#4a5ec7c64dfae22c3a14124dbacdee846d80cbc4"

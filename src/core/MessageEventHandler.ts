@@ -42,7 +42,8 @@ import {
   QRCodeCommandHandler,
   HashCommandHandler,
   LevenCommandHandler,
-  LanguageCommandHandler
+  LanguageCommandHandler,
+  CowCommandHandler
 } from '../commands';
 import { MemberService, GuildService } from '../db';
 import { FeatureHandler, FeatureDispatcher, QuoteFeatureHandler, Features } from '../features';
@@ -95,6 +96,7 @@ class MessageEventHandler extends EventHandler {
     if (commands.includes(Commands.HASH)) this._enableCommand(HashCommandHandler, []);
     if (commands.includes(Commands.LEVEN)) this._enableCommand(LevenCommandHandler, []);
     if (commands.includes(Commands.LANGUAGE)) this._enableCommand(LanguageCommandHandler, []);
+    if (commands.includes(Commands.COW)) this._enableCommand(CowCommandHandler, []);
 
   }
 

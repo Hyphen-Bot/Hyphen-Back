@@ -15,25 +15,25 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum Commands {
-  PING = "ping",
-  RANK = "rank",
-  WARN = "warn",
-  WARNS = "warns",
-  MUTE = "mute",
-  UNMUTE = "unmute",
-  CLEAR = "clear",
-  PUNCH = "punch",
-  KISS = "kiss",
-  SLAP = "slap",
-  IMAGE = "image",
-  TEMPMUTE = "tempmute",
-  USERINFO = "userinfo",
-  COUNTDOWN = "countdown",
-  MUSIC = "music",
-  QRCODE = "qrcode",
-  HASH = "hash",
-  LEVEN = "leven",
-  LANGUAGE = "language",
-  COW = "cow"
+import { Message } from 'discord.js';
+import * as cows from "cows";
+import CommandHandler from '../CommandHandler';
+import { CommandType } from '../CommandType';
+import { Commands } from '../Commands';
+
+class CowCommandHandler extends CommandHandler<CowCommandHandler> {
+
+  constructor() {
+    super({
+      command: Commands.COW,
+      type: CommandType.FUN,
+      description: "Get a cow ! 🐮"
+    });
+  }
+
+  handler = async (message: Message, payload: any) => {
+    message.channel.send("```" + cows()[Math.floor(Math.random() * cows().length)] + "```");
+  }
 }
+
+export default CowCommandHandler;
