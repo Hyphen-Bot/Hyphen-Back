@@ -29,5 +29,6 @@ export enum Commands {
   IMAGE = "image",
   TEMPMUTE = "tempmute",
   USERINFO = "userinfo",
-  COUNTDOWN = "countdown"
+  COUNTDOWN = "countdown",
+  MUSIC = "music"
 }

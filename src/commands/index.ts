@@ -33,6 +33,7 @@ import ImageCommandHandler from "./Tools/ImageCommandHandler";
 import TempMuteCommandHandler from "./Moderation/TempMuteCommandHandler";
 import UserInfoCommandHandler from "./Common/UserInfoCommandHandler";
 import CountdownCommandHandler from "./Tools/CountdownCommandHandler";
+import MusicCommandHandler from "./Common/MusicCommandHandler";
 
 export {
   CommandDispatcher,
@@ -52,5 +53,6 @@ export {
   ImageCommandHandler,
   TempMuteCommandHandler,
   UserInfoCommandHandler,
-  CountdownCommandHandler
+  CountdownCommandHandler,
+  MusicCommandHandler
 }
