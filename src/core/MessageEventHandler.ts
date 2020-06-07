@@ -36,7 +36,8 @@ import {
   SlapCommandHandler,
   ImageCommandHandler,
   TempMuteCommandHandler,
-  UserInfoCommandHandler
+  UserInfoCommandHandler,
+  CountdownCommandHandler
 } from '../commands';
 import { MemberService, GuildService } from '../db';
 import { FeatureHandler, FeatureDispatcher, QuoteFeatureHandler, Features } from '../features';
@@ -83,6 +84,7 @@ class MessageEventHandler extends EventHandler {
     if (commands.includes(Commands.IMAGE)) this._enableCommand(ImageCommandHandler, []);
     if (commands.includes(Commands.TEMPMUTE)) this._enableCommand(TempMuteCommandHandler, []);
     if (commands.includes(Commands.USERINFO)) this._enableCommand(UserInfoCommandHandler, []);
+    if (commands.includes(Commands.COUNTDOWN)) this._enableCommand(CountdownCommandHandler, []);
 
   }
 

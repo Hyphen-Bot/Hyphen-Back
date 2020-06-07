@@ -28,5 +28,6 @@ export enum Commands {
   SLAP = "slap",
   IMAGE = "image",
   TEMPMUTE = "tempmute",
-  USERINFO = "userinfo"
+  USERINFO = "userinfo",
+  COUNTDOWN = "countdown"
 }

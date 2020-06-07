@@ -32,6 +32,7 @@ import SlapCommandHandler from "./Fun/SlapCommandHandler";
 import ImageCommandHandler from "./Tools/ImageCommandHandler";
 import TempMuteCommandHandler from "./Moderation/TempMuteCommandHandler";
 import UserInfoCommandHandler from "./Common/UserInfoCommandHandler";
+import CountdownCommandHandler from "./Tools/CountdownCommandHandler";
 
 export {
   CommandDispatcher,
@@ -50,5 +51,6 @@ export {
   SlapCommandHandler,
   ImageCommandHandler,
   TempMuteCommandHandler,
-  UserInfoCommandHandler
+  UserInfoCommandHandler,
+  CountdownCommandHandler
 }
