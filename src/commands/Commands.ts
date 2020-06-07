@@ -32,5 +32,6 @@ export enum Commands {
   COUNTDOWN = "countdown",
   MUSIC = "music",
   QRCODE = "qrcode",
-  HASH = "hash"
+  HASH = "hash",
+  LEVEN = "leven"
 }

@@ -36,6 +36,7 @@ import CountdownCommandHandler from "./Tools/CountdownCommandHandler";
 import MusicCommandHandler from "./Common/MusicCommandHandler";
 import QRCodeCommandHandler from "./Tools/QRCodeCommandHandler";
 import HashCommandHandler from "./Tools/HashCommandHandler";
+import LevenCommandHandler from "./Tools/LevenCommandHandler";
 
 export {
   CommandDispatcher,
@@ -58,5 +59,6 @@ export {
   CountdownCommandHandler,
   MusicCommandHandler,
   QRCodeCommandHandler,
-  HashCommandHandler
+  HashCommandHandler,
+  LevenCommandHandler
 }
