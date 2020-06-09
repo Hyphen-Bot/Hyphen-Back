@@ -39,8 +39,9 @@ class SpamFeatureHandler extends FeatureHandler<SpamFeatureHandler> {
     let duplicateMessages = [];
     let spamMessages = [];
     message.channel.messages.cache.array().reduce((previousMsg: Message, currentMsg: Message) => {
+      if (previousMsg.author.id !== currentMsg.author.id && currentMsg.author.id !== message.author.id) return currentMsg;
       if (previousMsg.content.replace(" ", "").toLowerCase() === currentMsg.content.replace(" ", "").toLowerCase()) duplicateMessages.push(currentMsg);
-      if (Math.abs(moment(previousMsg.createdTimestamp).milliseconds() - moment(currentMsg.createdTimestamp).milliseconds()) < 500) spamMessages.push(currentMsg);
+      if (Math.abs(moment(previousMsg.createdTimestamp).milliseconds() - moment(currentMsg.createdTimestamp).milliseconds()) < 300) spamMessages.push(currentMsg);
       return currentMsg;
     });
 
