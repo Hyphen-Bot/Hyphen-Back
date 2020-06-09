@@ -46,7 +46,7 @@ import {
   CowCommandHandler
 } from '../commands';
 import { MemberService, GuildService } from '../db';
-import { FeatureHandler, FeatureDispatcher, QuoteFeatureHandler, Features, SpamFeatureHandler } from '../features';
+import { FeatureHandler, FeatureDispatcher, QuoteFeatureHandler, Features, SpamFeatureHandler, LinkPreventionFeatureHandler } from '../features';
 
 class MessageEventHandler extends EventHandler {
 
@@ -111,6 +111,7 @@ class MessageEventHandler extends EventHandler {
     // all features come here
     if (features.includes(Features.QUOTE)) this._enableFeature(QuoteFeatureHandler);
     if (features.includes(Features.SPAM)) this._enableFeature(SpamFeatureHandler);
+    if (features.includes(Features.LINKPREVENTION)) this._enableFeature(LinkPreventionFeatureHandler);
 
   }
 
