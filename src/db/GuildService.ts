@@ -54,6 +54,12 @@ class GuildService {
     return this._guildRepository.save(guild);
   }
 
+  async setGuildLogChannelId(id: string, channelId: string) {
+    const guild = await this.getGuild(id);
+    guild.logChannelId = channelId;
+    return this._guildRepository.save(guild);
+  }
+
   async enableCommand(guildId: string, command: string): Promise<GuildEntity> {
     if (!Object.keys(Commands).map(cmd => cmd.toLowerCase()).includes(command)) throw new Error("Command does not exist !");
 

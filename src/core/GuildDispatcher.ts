@@ -25,6 +25,7 @@ import { GuildService } from '../db';
 import { GuildEntity } from '../db/entity';
 import ChannelCreateEventHandler from './ChannelCreateEventHandler';
 import ApiEventHandler from './ApiEventHandler';
+import MessageDeleteEventHandler from './MessageDeleteEventHandler';
 
 class GuildDispatcher {
 
@@ -58,6 +59,7 @@ class GuildDispatcher {
     this._eventHandlers.push(new MessageEventHandler(this._client, this._guild, this._apiEventEmitter));
     this._eventHandlers.push(new ChannelCreateEventHandler(this._client, this._guild, this._apiEventEmitter));
     this._eventHandlers.push(new ApiEventHandler(this._client, this._guild, this._apiEventEmitter));
+    this._eventHandlers.push(new MessageDeleteEventHandler(this._client, this._guild, this._apiEventEmitter));
   }
 
   _initializeGuild = async (guild: GuildEntity) => {
@@ -77,6 +79,13 @@ class GuildDispatcher {
         this._guild.channels.cache.forEach(async (channel: GuildChannel) => {
           await channel.overwritePermissions([{ id, deny: ["SEND_MESSAGES", "SPEAK"] }], "Deny muted role to speak / write in channels.");
         });
+      }
+
+      // initialize channels
+      if (!guild.logChannelId) {
+        Logger.info(`Adding log channel to guild ${this._guild.id}...`);
+        const { id } = await this._guild.channels.create("logs", { permissionOverwrites: [{ id: this._guild.roles.everyone.id, deny: ["SEND_MESSAGES", "VIEW_CHANNEL"] }], reason: "Initialized log channel.", topic: "This is Hyphen's log channel." });
+        await this._guildService.setGuildLogChannelId(this._guild.id, id);
       }
     } catch (e) {
       Logger.error(e.message);

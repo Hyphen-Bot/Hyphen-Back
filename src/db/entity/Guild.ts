@@ -43,6 +43,9 @@ export default class Guild {
     @Column({ nullable: true })
     mutedRoleId: string;
 
+    @Column({ nullable: true })
+    logChannelId: string;
+
     @CreateDateColumn()
     createdAt: Date;
 }
