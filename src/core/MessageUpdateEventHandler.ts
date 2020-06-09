@@ -21,7 +21,7 @@ import { EventEmitter } from 'events';
 import EventHandler from "./EventHandler";
 import { GuildService } from '../db';
 
-class MessageDeleteEventHandler extends EventHandler {
+class MessageUpdateEventHandler extends EventHandler {
 
   _guildService: GuildService;
 
@@ -31,31 +31,22 @@ class MessageDeleteEventHandler extends EventHandler {
     this._guildService = container.resolve(GuildService);
 
     // listeners
-    this._client.on("messageDelete", this._handleMessageDeleted);
+    this._client.on("messageUpdate", this._handleMessageUpdated);
   }
 
-  _handleMessageDeleted = async (message: Message) => {
-    if (message.guild.id === this._guild.id) {
+  _handleMessageUpdated = async (oldMessage: Message, newMessage: Message) => {
+    if (newMessage.guild.id === this._guild.id) {
       const guild = await this._guildService.getGuild(this._guild.id);
       const logChannel = <TextChannel>this._guild.channels.resolve(guild.logChannelId);
       const embed = new MessageEmbed();
-      embed.setAuthor("Message deleted", message.author.displayAvatarURL());
-      embed.setColor("#e04a4a");
-      embed.addField("Content", "```" + message.content + "```");
+      embed.setAuthor("Message edited (click here)", newMessage.author.displayAvatarURL(), newMessage.url);
+      embed.setColor("#4aa4e0");
+      embed.addField("New content", "```" + newMessage.content + "```");
+      embed.addField("Old content", "```" + oldMessage.content + "```");
       embed.setDescription(
-        `**Author:** <@${message.author.id}> (${message.author.tag})\n` +
-        `**Channel:** <#${message.channel.id}>`
+        `**Author:** <@${newMessage.author.id}> (${newMessage.author.tag})\n` +
+        `**Channel:** <#${newMessage.channel.id}>`
       );
-
-      if (message.attachments.size === 1) {
-        embed.setImage(message.attachments.array()[0].url);
-      } else if (message.attachments.size > 1) {
-        let attachments = "";
-        message.attachments.array().forEach(attachment => {
-            attachments += `• ${attachment.url}\n`;
-        });
-        embed.addField("Additional attachments", attachments);
-      }
 
       embed.setTimestamp();
 
@@ -64,4 +55,4 @@ class MessageDeleteEventHandler extends EventHandler {
   }
 }
 
-export default MessageDeleteEventHandler;
+export default MessageUpdateEventHandler;

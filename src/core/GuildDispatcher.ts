@@ -26,6 +26,7 @@ import { GuildEntity } from '../db/entity';
 import ChannelCreateEventHandler from './ChannelCreateEventHandler';
 import ApiEventHandler from './ApiEventHandler';
 import MessageDeleteEventHandler from './MessageDeleteEventHandler';
+import MessageUpdateEventHandler from './MessageUpdateEventHandler';
 
 class GuildDispatcher {
 
@@ -60,6 +61,7 @@ class GuildDispatcher {
     this._eventHandlers.push(new ChannelCreateEventHandler(this._client, this._guild, this._apiEventEmitter));
     this._eventHandlers.push(new ApiEventHandler(this._client, this._guild, this._apiEventEmitter));
     this._eventHandlers.push(new MessageDeleteEventHandler(this._client, this._guild, this._apiEventEmitter));
+    this._eventHandlers.push(new MessageUpdateEventHandler(this._client, this._guild, this._apiEventEmitter));
   }
 
   _initializeGuild = async (guild: GuildEntity) => {
