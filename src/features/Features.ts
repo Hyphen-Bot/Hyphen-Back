@@ -17,4 +17,5 @@
 
 export enum Features {
   QUOTE = "quote",
+  SPAM = "spam"
 }

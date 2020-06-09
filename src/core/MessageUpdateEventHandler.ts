@@ -39,6 +39,7 @@ class MessageUpdateEventHandler extends EventHandler {
       const guild = await this._guildService.getGuild(this._guild.id);
       const logChannel = <TextChannel>this._guild.channels.resolve(guild.logChannelId);
       const embed = new MessageEmbed();
+      if (!newMessage.content) return;
       embed.setAuthor("Message edited (click here)", newMessage.author.displayAvatarURL(), newMessage.url);
       embed.setColor("#4aa4e0");
       embed.addField("New content", "```" + newMessage.content + "```");

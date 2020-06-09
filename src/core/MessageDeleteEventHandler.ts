@@ -39,6 +39,7 @@ class MessageDeleteEventHandler extends EventHandler {
       const guild = await this._guildService.getGuild(this._guild.id);
       const logChannel = <TextChannel>this._guild.channels.resolve(guild.logChannelId);
       const embed = new MessageEmbed();
+      if (!message.content) return;
       embed.setAuthor("Message deleted", message.author.displayAvatarURL());
       embed.setColor("#e04a4a");
       embed.addField("Content", "```" + message.content + "```");

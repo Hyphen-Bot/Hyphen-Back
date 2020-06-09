@@ -19,10 +19,12 @@ import FeatureHandler from "./FeatureHandler";
 import FeatureDispatcher from "./FeatureDispatcher";
 import { Features } from "./Features";
 import QuoteFeatureHandler from "./Common/QuoteFeatureHandler";
+import SpamFeatureHandler from "./Moderation/SpamFeatureHandler";
 
 export {
   FeatureHandler,
   FeatureDispatcher,
   Features,
-  QuoteFeatureHandler
+  QuoteFeatureHandler,
+  SpamFeatureHandler
 }
