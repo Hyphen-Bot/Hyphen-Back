@@ -81,7 +81,7 @@ class GuildDispatcher {
         const { id } = await this._guild.roles.create({ data: { name: "Muted", permissions: 0, position }, reason: "Initialize muted role." });
         await this._guildService.setGuildMutedRoleId(this._guild.id, id);
         this._guild.channels.cache.forEach(async (channel: GuildChannel) => {
-          await channel.overwritePermissions([{ id, deny: ["SEND_MESSAGES", "SPEAK"] }], "Deny muted role to speak / write in channels.");
+          await channel.overwritePermissions([...channel.permissionOverwrites.array(), { id, deny: ["SEND_MESSAGES", "SPEAK"] }], "Deny muted role to speak / write in channels.");
         });
       }
 
