@@ -39,6 +39,7 @@ import HashCommandHandler from "./Tools/HashCommandHandler";
 import LevenCommandHandler from "./Tools/LevenCommandHandler";
 import LanguageCommandHandler from "./Tools/LanguageCommandHandler";
 import CowCommandHandler from "./Fun/CowCommandHandler";
+import SayCommandHandler from "./Common/SayCommandHandler";
 
 export {
   CommandDispatcher,
@@ -64,5 +65,6 @@ export {
   HashCommandHandler,
   LevenCommandHandler,
   LanguageCommandHandler,
-  CowCommandHandler
+  CowCommandHandler,
+  SayCommandHandler
 }

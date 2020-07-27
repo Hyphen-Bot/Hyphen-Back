@@ -35,5 +35,6 @@ export enum Commands {
   HASH = "hash",
   LEVEN = "leven",
   LANGUAGE = "language",
-  COW = "cow"
+  COW = "cow",
+  SAY = "say"
 }

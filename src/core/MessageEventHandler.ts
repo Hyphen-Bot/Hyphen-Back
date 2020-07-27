@@ -43,7 +43,8 @@ import {
   HashCommandHandler,
   LevenCommandHandler,
   LanguageCommandHandler,
-  CowCommandHandler
+  CowCommandHandler,
+  SayCommandHandler
 } from '../commands';
 import { MemberService, GuildService } from '../db';
 import { FeatureHandler, FeatureDispatcher, QuoteFeatureHandler, Features, SpamFeatureHandler, LinkPreventionFeatureHandler } from '../features';
@@ -97,6 +98,7 @@ class MessageEventHandler extends EventHandler {
     if (commands.includes(Commands.LEVEN)) this._enableCommand(LevenCommandHandler, []);
     if (commands.includes(Commands.LANGUAGE)) this._enableCommand(LanguageCommandHandler, []);
     if (commands.includes(Commands.COW)) this._enableCommand(CowCommandHandler, []);
+    if (commands.includes(Commands.SAY)) this._enableCommand(SayCommandHandler, [Permissions.FLAGS.MANAGE_MESSAGES]);
 
   }
 
